@@ -6,7 +6,7 @@
 
   var ENDPOINT = 'https://script.google.com/macros/s/AKfycbxdFplWVSfhTjvyIA7HIWb645xRjGNhBVhTdTf5UMjo0lSpW_A_jCuys0qB4uImKXPQ/exec?aba=OPERACAO';
   var ABA = 'OPERACAO';
-  var CHECKOUT = 'https://checkout.cppem.com.br/pay/operacao-alvorada-lote-01';
+  var CHECKOUT = 'https://checkout.cppem.com.br/pay/op-alvorada-11-ingresso';
 
   /* =========================================================
      Tracking de Lead — Modelo A (§5): quem dispara é o PAINEL
@@ -136,7 +136,9 @@
   }
 
   /* ---------- reveal on scroll (com escalonamento) ---------- */
-  var targets = document.querySelectorAll('.section__head, .card, .steps li, .final__inner, .cdown, .lote, .ficha__item, .corridao, .duo__col, .faq__item, .lineup__card');
+  /* .ficha__item ficou de fora de propósito: a ficha agora mora na hero e já
+     entra pela animação .anim d5 — dois fade-ins no mesmo bloco brigariam. */
+  var targets = document.querySelectorAll('.section__head, .card, .steps li, .final__inner, .cdown, .lote, .corridao, .duo__col, .faq__item, .lineup__card');
   Array.prototype.forEach.call(targets, function (el) { el.classList.add('reveal'); });
 
   if ('IntersectionObserver' in window) {
