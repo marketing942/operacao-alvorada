@@ -1,4 +1,9 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+
+  "//": "outputDirectory NÃO é decorativo. Sem build declarado, o Vercel usa a pasta `public/` como raiz do site quando ela existe — e aí o index.html da raiz do repositório nunca é servido, e TODAS as rotas viram 404. Foi o que aconteceu quando `assets/` virou `public/`. Declarar a raiz explicitamente tira a decisão da adivinhação por nome de pasta.",
+  "outputDirectory": ".",
+
   "cleanUrls": true,
   "trailingSlash": false,
   "headers": [
