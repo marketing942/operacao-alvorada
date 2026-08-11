@@ -1746,6 +1746,34 @@ Estas não dão para resolver no código ([§13](#13-o-que-não-dá-para-control
 - [ ] Conferir no preview do GTM que `exit_popup_submit` **não** está ligado à
       tag de `Lead`.
 
+### Deploy (Vercel)
+
+Produção sai de `main` por integração com o GitHub — `git push` já publica.
+Projeto `operacao-alvorada`, em `operacaoalvorada.cppem.com.br`.
+
+Duas armadilhas que já derrubaram este site, ambas resolvidas em
+[vercel.json](vercel.json):
+
+**1. `outputDirectory` não é decorativo.** Sem build declarado, o Vercel adota a
+pasta **`public/`** como raiz do site quando ela existe. Como o `index.html`
+mora na raiz do repositório, ele deixava de ser servido e **todas** as rotas
+respondiam 404 — enquanto `/logo-cppem.png` (isto é, `public/logo-cppem.png`)
+respondia 200, que é o teste que identifica o problema em um curl. Começou
+quando a pasta `assets/` virou `public/`. `"outputDirectory": "."` tira a
+decisão da adivinhação por nome de pasta.
+
+**2. `vercel.json` não aceita comentário.** É JSON, e o schema do Vercel rejeita
+propriedade desconhecida — inclusive a convenção `"//"`. O deploy falha inteiro
+com `Schema verification failed`. É por isso que esta explicação mora aqui e não
+lá dentro.
+
+> Para validar antes de publicar: `vercel deploy` (sem `--prod`) sobe um preview
+> e devolve o erro de schema na hora, sem tocar em produção.
+
+O [.vercelignore](.vercelignore) mantém fora do deploy os originais de câmera,
+os scripts de build e a documentação. Se algum asset sumir em produção mas
+funcionar local, é o primeiro arquivo a conferir.
+
 ### Arquivos
 
 - [index.html](index.html) — loader do GTM no `<head>`, `<form>` do painel no
