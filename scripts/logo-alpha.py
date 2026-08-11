@@ -60,7 +60,17 @@ def main() -> None:
 
     # O leão sai ANTES do downscale: ele vira marca d'água de 620px de altura,
     # e recortá-lo da versão já reduzida entregaria um emblema borrado.
-    leao = out.crop((0, 0, int(out.width * 0.33), out.height))
+    #
+    # O corte procura o VÃO real entre o leão e o "C" de CPPEM — a primeira
+    # coluna totalmente transparente depois do emblema. Cortar numa fração fixa
+    # da largura (era 33%) deixava passar uma lasca do "C", que aparecia como um
+    # risco vertical no favicon.
+    alfa_col = np.asarray(out)[:, :, 3].max(axis=0)
+    vazias = np.flatnonzero(alfa_col == 0)
+    limite = int(out.width * 0.40)          # o leão nunca passa disso
+    corte = next((int(x) for x in vazias if x < limite), limite)
+
+    leao = out.crop((0, 0, corte, out.height))
     caixa_leao = leao.getbbox()
     if caixa_leao:
         leao = leao.crop(caixa_leao)

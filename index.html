@@ -12,9 +12,87 @@
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OPERAÇÃO ALVORADA — A ASCENSÃO | 11ª EDIÇÃO | CPPEM</title>
+<!-- Título em caixa mista e com a data: o Google reescreve com frequência
+     títulos em CAIXA ALTA e cheios de separadores, e era o que acontecia aqui
+     (aparecia como "OPERAÇÃO ALVORADA – CPPEM Concursos Públicos"). -->
+<title>Operação Alvorada 11ª Edição — 26 e 27 de setembro | CPPEM</title>
 <meta name="description" content="26 e 27 de setembro, das 19h às 07h, na sede do CPPEM. Uma madrugada inteira de estudos para quem vai vestir a farda, com corridão às 05h do dia 27. Vagas limitadas a 250 cadeiras.">
-<link rel="icon" href="public/logo-cppem.png">
+<link rel="canonical" href="https://operacaoalvorada.cppem.com.br/">
+
+<!-- Favicon: o Google só aceita QUADRADO e com lado múltiplo de 48px. Enquanto
+     isto apontava para logo-cppem.png (700x239), ele descartava e mostrava o
+     globo cinza genérico no resultado de busca. -->
+<link rel="icon" href="public/favicon.ico" sizes="48x48">
+<link rel="icon" href="public/favicon-192.png" type="image/png" sizes="192x192">
+<link rel="apple-touch-icon" href="public/favicon-192.png">
+
+<!-- Open Graph: sem estas tags, WhatsApp e Instagram montam o preview por
+     conta própria — sem imagem e com o texto que encontrarem. É o formato em
+     que a maior parte deste tráfego chega. -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="CPPEM Concursos Públicos">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:url" content="https://operacaoalvorada.cppem.com.br/">
+<meta property="og:title" content="Operação Alvorada — 11ª edição | 26 e 27 de setembro">
+<meta property="og:description" content="Uma madrugada inteira de estudos, presencial, das 19h às 07h, com foco total em PMPE e PCPE. Corridão às 05h. Vagas limitadas.">
+<meta property="og:image" content="https://operacaoalvorada.cppem.com.br/public/og-alvorada.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Operação Alvorada — 11ª edição, 26 e 27 de setembro, 19h às 07h, na sede do CPPEM.">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Operação Alvorada — 11ª edição | 26 e 27 de setembro">
+<meta name="twitter:description" content="Uma madrugada inteira de estudos, presencial, das 19h às 07h, com foco total em PMPE e PCPE. Corridão às 05h.">
+<meta name="twitter:image" content="https://operacaoalvorada.cppem.com.br/public/og-alvorada.jpg">
+
+<!-- Dados estruturados de evento: é o que permite ao Google mostrar data,
+     local e faixa de preço direto no resultado. Os preços precisam bater com
+     os cards da seção #ingressos. -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "EducationEvent",
+  "name": "Operação Alvorada — 11ª edição · A Ascensão",
+  "description": "Madrugada inteira de estudos presencial, das 19h às 07h, com foco em PMPE e PCPE, encerrada pelo corridão às 05h.",
+  "startDate": "2026-09-26T19:00:00-03:00",
+  "endDate": "2026-09-27T07:00:00-03:00",
+  "eventStatus": "https://schema.org/EventScheduled",
+  "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+  "image": "https://operacaoalvorada.cppem.com.br/public/og-alvorada.jpg",
+  "url": "https://operacaoalvorada.cppem.com.br/",
+  "inLanguage": "pt-BR",
+  "maximumAttendeeCapacity": 250,
+  "location": {
+    "@type": "Place",
+    "name": "Sede CPPEM",
+    "address": { "@type": "PostalAddress", "addressLocality": "Recife", "addressRegion": "PE", "addressCountry": "BR" }
+  },
+  "organizer": {
+    "@type": "Organization",
+    "name": "CPPEM Concursos Públicos",
+    "url": "https://cppem.com.br"
+  },
+  "performer": { "@type": "Person", "name": "Prof. Everton Mota" },
+  "offers": [
+    {
+      "@type": "Offer",
+      "name": "Ingresso Padrão — 1º lote",
+      "price": "47.90",
+      "priceCurrency": "BRL",
+      "availability": "https://schema.org/InStock",
+      "url": "https://operacaoalvorada.cppem.com.br/#ingressos"
+    },
+    {
+      "@type": "Offer",
+      "name": "Ingresso VIP",
+      "price": "147.00",
+      "priceCurrency": "BRL",
+      "availability": "https://schema.org/InStock",
+      "url": "https://operacaoalvorada.cppem.com.br/#ingressos"
+    }
+  ]
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;500;600;700;800&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -226,14 +304,14 @@
             <b><i>R$</i>147</b>
             <span class="plano__preco-nota">Apenas 50 pessoas</span>
           </div>
-          <!-- 🔴 PENDENTE: o checkout do VIP ainda NÃO existe. A URL abaixo é um
-               palpite que segue a convenção do ingresso padrão. NÃO PUBLICAR
-               antes de trocar pelo link real — comprador do VIP cairia num 404
-               depois de já ter deixado nome, e-mail e WhatsApp.
-               É o único lugar do projeto onde esse endereço aparece. -->
+          <!-- Produto "Operação Alvorada 11 especial", R$ 147,00 no checkout.
+               O slug é `-especial`, e não `-vip`: o checkout devolve HTTP 200
+               para qualquer caminho e só resolve a oferta no cliente, então um
+               slug errado não dá erro — mostra "Oferta não encontrada!" depois
+               de o comprador já ter deixado nome, e-mail e WhatsApp. -->
           <button class="btn btn--gold btn--lg btn--block shine js-open" type="button"
                   data-produto="Ingresso VIP"
-                  data-checkout="https://checkout.cppem.com.br/pay/op-alvorada-11-vip">
+                  data-checkout="https://checkout.cppem.com.br/pay/op-alvorada-11-especial">
             <span>Quero o VIP</span>
           </button>
         </div>
