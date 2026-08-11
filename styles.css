@@ -759,30 +759,6 @@ strong, b { font-weight: 700; color: var(--text); }
 .cross li::before { content: '✕'; color: #D08F88; background: rgba(194,91,82,.12); box-shadow: inset 0 0 0 1px rgba(194,91,82,.32); }
 
 /* =========================================================
-   PASSOS
-   ========================================================= */
-.steps { list-style: none; display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; counter-reset: s; }
-.steps li {
-  position: relative; padding: 30px 26px;
-  background: linear-gradient(180deg, var(--bg-3), var(--bg-2));
-  box-shadow: inset 0 0 0 1px var(--border);
-  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px));
-  transition: box-shadow var(--t), transform var(--t);
-}
-.steps li:hover { transform: translateY(-4px); box-shadow: inset 0 0 0 1px var(--border-active); }
-.steps li > span {
-  display: grid; place-items: center; width: 46px; height: 46px; margin-bottom: 18px;
-  font-family: var(--font-title); font-size: 19px; font-weight: 800; color: #0B0A08;
-  background: linear-gradient(160deg, var(--gold-light), var(--gold-dark));
-  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
-}
-.steps h3 {
-  font-family: var(--font-title); font-size: 16.5px; font-weight: 700;
-  letter-spacing: 1.4px; text-transform: uppercase; margin-bottom: 8px; color: var(--text);
-}
-.steps p { font-size: 15.5px; color: var(--text-dim); line-height: 1.6; }
-
-/* =========================================================
    GALERIA — EDIÇÕES ANTERIORES
    ========================================================= */
 .galeria { display: grid; grid-template-columns: repeat(4, 1fr); grid-auto-rows: 196px; gap: 12px; }
@@ -1016,7 +992,6 @@ strong, b { font-weight: 700; color: var(--text); }
   .ficha { grid-template-columns: repeat(3, 1fr); }
   .cards--3, .lineup { grid-template-columns: repeat(2, 1fr); }
   .stats { grid-template-columns: repeat(2, 1fr); gap: 26px; }
-  .steps { grid-template-columns: repeat(2, 1fr); }
   .galeria { grid-template-columns: repeat(2, 1fr); }
   .galeria figure:nth-child(1) { grid-column: span 2; grid-row: span 1; }
   .galeria figure:nth-child(6) { grid-column: span 2; grid-row: span 2; }
@@ -1063,7 +1038,7 @@ strong, b { font-weight: 700; color: var(--text); }
   .cdown { gap: 2px; padding: 24px 12px; }
   .cdown__sep { display: none; }
 
-  .cards--3, .lineup, .duo, .steps { grid-template-columns: 1fr; }
+  .cards--3, .lineup, .duo { grid-template-columns: 1fr; }
   .stats { grid-template-columns: repeat(2, 1fr); gap: 22px 14px; }
   .medal__body { width: 132px; height: 150px; }
   .medal__body b { font-size: 33px; }

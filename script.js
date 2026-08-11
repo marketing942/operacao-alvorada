@@ -201,7 +201,7 @@
   /* .ficha__item ficou de fora de propósito: a ficha mora na hero e já entra
      pela animação .anim d5 — dois fade-ins no mesmo bloco brigariam. */
   var targets = document.querySelectorAll(
-    ".section__head, .card, .steps li, .final__inner, .cdown, .lote, .corridao, " +
+    ".section__head, .card, .final__inner, .cdown, .lote, .corridao, " +
     ".duo__col, .faq__item, .lineup__card, .medal, .galeria figure"
   );
   Array.prototype.forEach.call(targets, function (el) { el.classList.add("reveal"); });
