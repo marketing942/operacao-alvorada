@@ -1508,99 +1508,256 @@ três formatos: mascarado, cru ou já normalizado com `+55`.
 
 ## 14. Estado atual deste projeto
 
-**Modelo em uso: B** (o site dispara o Lead). Configurado no topo do
+> Landing da **Operação Alvorada — 11ª edição**. As seções 1 a 13 são a doc
+> compartilhada, idêntica à das outras landings da CPPEM. Só esta §14 é
+> específica deste site.
+
+**Modelo em uso: A** (o painel dispara o Lead). Declarado no topo do
 [script.js](script.js):
 
 ```js
-var LEAD_MODE = 'site';   // 'site' (Modelo B) | 'painel' (Modelo A)
+var LEAD_MODE = "painel";   // "painel" (Modelo A) | "site" (Modelo B)
 ```
 
-### Por que Modelo B aqui
+### Por que Modelo A aqui — e por que o B foi removido
 
-Auditoria feita no código: **nenhum** `send_event`, **nenhum** `fbq`, **nenhum**
-loader direto da PixelX. O site não tinha emissor de Lead algum.
+Este site **já rodou em Modelo B** e foi trazido de volta para o A de
+propósito. O motivo é o mesmo mecanismo da [§8.7](#87-modelo-b-silenciando-as-tags-do-gtm),
+só que com o sintoma invertido:
 
-E o `<form>` tem `id="leadForm"` — um id **genérico**, não o id opaco que o
-painel gera (nas outras landings da CPPEM é algo como `IPEyzyfmJhKQEYIXAlZH`).
-Pelo [§6](#6-como-a-pixelx-identifica-os-campos), é esse id que vincula o
-formulário à regra do painel. Sem ele, uma regra de submit não encontra nada
-para vincular — **é a Falha A**.
+| Site | Chamada manual à PixelX | Resultado |
+|---|---|---|
+| PMPE | não-roteada | não chegava a **nenhuma** tag Meta |
+| Operação Alvorada | não-roteada | chegava a **todas** as tags Meta |
 
-O Modelo B não depende desse casamento, então resolve sem exigir acesso ao
-painel.
+Uma chamada manual não passa por regra de conversão nenhuma, então a PixelX a
+entrega pelo **padrão da conta** — que pode ser tudo ou nada, e nunca o destino
+certo por acaso. Quem roteia é a **regra**, e a regra só existe atrelada ao id
+do `<form>`.
 
-> Se preferir o Modelo A: cadastre este formulário no painel, troque
-> `id="leadForm"` pelo id que ele devolver (**nos dois lugares** — HTML e
-> `script.js`) e mude `LEAD_MODE` para `'painel'`.
+E aqui o vínculo está correto: o id opaco `IPEyzyfmJhKQEYIXAlZH` está no
+**`<form>`**, que é onde a [§6.0](#60--a-nomenclatura-não-é-cosmética--ela-é-o-vínculo)
+manda. Diferente do PMPE, onde ele ficou no `<button>` e por isso o Modelo A
+não tinha como funcionar.
+
+> **Não copie o `LEAD_MODE` do PMPE para cá.** São decisões opostas, cada uma
+> certa no seu contexto: lá o vínculo do painel está quebrado e o site precisa
+> emitir; aqui o vínculo funciona e o site precisa ficar calado.
 
 ### Como a duplicação fica impedida
 
-A barreira de submit ([§7.8](#78-ordem-de-registro-dos-listeners-de-submit)) corta
-a propagação em fase de captura no `document`:
-
 | Emissor | Situação |
 |---|---|
-| Regra de **submit** no painel | **Inerte** — o evento nunca chega ao `<form>` |
-| `send_event` do site | Único ativo, com guarda de idempotência |
+| Regra de **submit** no painel | **Único ativo** — a barreira propaga quando os dados são válidos |
+| Chamada manual à PixelX no site | Não existe — o validador falha se aparecer |
 | `fbq('track','Lead')` | Não existe no projeto |
-| Loader direto da PixelX | Não existe no projeto |
-| Regra de **clique** no painel | ⚠️ **Não dá para neutralizar pelo site** |
+| Push de `Lead` no dataLayer | Não existe no projeto |
+| Loader direto da PixelX | Não existe — a PixelX entra só pelo GTM |
+| Regra de **clique** no painel | ⚠️ Duplicaria; confira no painel — ver abaixo |
 
-> ⚠️ Uma regra de conversão **por clique** no painel dispararia junto com a
-> nossa e duplicaria. O site não tem como impedir, porque o clique acontece
-> antes do submit. Confira no painel — teste de
+> ⚠️ **O único risco remanescente.** Uma regra de conversão **por clique** no
+> painel dispararia junto com a de submit e duplicaria. O site não tem como
+> impedir, porque o clique acontece antes do submit. Teste de
 > [§10.3](#103-auditoria-de-emissores-duplicados).
 
-### O que foi corrigido
+### As duas barreiras
 
-| Defeito encontrado | Seção | Correção |
-|---|---|---|
-| Listener de `submit` no próprio `<form>`, sem `stopImmediatePropagation` no inválido — a PixelX registraria Lead com dado ruim | [§7.8](#78-ordem-de-registro-dos-listeners-de-submit) | Barreira em fase de **captura** no `document` |
-| Telefone validado por `10 a 13 dígitos` — aceitava fixo, incompleto, e contava o `+55` da máscara | [§7.7](#77-validar-o-telefone-pelo-length-da-string--o-erro-mais-traiçoeiro) | Regra por dígitos nacionais, removendo o `+55` pelo `+` literal |
-| Redirect por `Promise.race` sem piso: com `no-cors` o `fetch` resolve em ~200ms e a navegação cancelava o evento | [§7.6](#76-formreset-e-redirecionamento-cedo-demais) | Piso fixo de `REDIRECT_DELAY_MS = 1500` |
-| Sem `pxa_mask_phone` no campo de telefone | [§6](#6-como-a-pixelx-identifica-os-campos) | Classe adicionada |
-| Telefone ia sem código de país (viraria `+81…`, Japão) | — | `toE164()` antes do `send_event` |
-| Sem guarda de idempotência | [§9](#9-template-portável) | `leadEnviado` + `enviado` |
+Diferente do Modelo B, aqui a barreira de submit **precisa propagar** quando os
+dados são válidos — é a propagação que faz a regra do painel registrar o Lead.
+Cortar ali zeraria a conversão ([§8.4](#84-a-barreira-de-validação-matando-o-lead)).
 
-### Diagnóstico no console
+| Situação | Clique (captura) | Submit (captura no `document`) | Lead |
+|---|---|---|---|
+| Inválido | `preventDefault` → o `submit` nem nasce | `stopImmediatePropagation` | nenhum |
+| Válido | passa | `preventDefault` + **propaga** | 1, pelo painel |
+
+O `preventDefault` do clique é condicional **de propósito**: cancelar o clique
+sempre é o defeito da [§7.4](#74-preventdefault-no-clique-mata-o-evento-submit),
+que mata o `submit` e com ele a conversão inteira.
+
+### Os dois formulários
+
+Esta página tem **dois**. Só um é Lead:
+
+| Formulário | id | Dispara Lead? | Evento próprio |
+|---|---|---|---|
+| Venda da cadeira | `IPEyzyfmJhKQEYIXAlZH` | **Sim** — é a conversão | — |
+| Exit popup (comunidade) | `.xp__form`, sem id | **Não** | `exit_popup_submit` no dataLayer |
+
+O popup capta para o **grupo gratuito** — intenção muito menor que a de quem
+está comprando uma cadeira. Contar os dois como `Lead` misturaria os públicos e
+degradaria a otimização das campanhas: o algoritmo passaria a buscar gente
+parecida com quem só queria algo grátis.
+
+Quem garante isso é o `stopSubmitPropagation: true` do kit, que corta o submit
+em **fase de captura no `document`** — antes de qualquer listener registrado no
+`<form>`, inclusive os que a PixelX instala de dentro de um `start()` assíncrono
+([§7.8](#78-ordem-de-registro-dos-listeners-de-submit)). Nenhuma regra de painel
+alcança esse formulário.
+
+> 🔴 **`stopSubmitPropagation` é obrigatório ficar `true` aqui.** No PMPE ele
+> podia ser discutido porque lá o modelo é B e o painel já está inerte. Aqui o
+> modelo é A e a regra do painel está **ativa** — desligar o corte faria um
+> cadastro de comunidade entrar na mesma conversão da venda.
+
+**Ordem no DOM importa.** O `<form>` da venda tem que vir **antes** do popup no
+HTML. O validador escolhe o formulário auditado com
+`/class="[^"]*form|name="lead_form"/` e pega o **primeiro** — e `class="xp__form"`
+também casa com esse regex. Popup antes da venda faria as 7 checagens de
+nomenclatura auditarem o formulário errado, **em silêncio e todas verdes**.
+
+> **Limitação conhecida ([§13](#13-o-que-não-dá-para-controlar-pelo-site)):** os
+> campos do popup usam `name="nome|email|telefone"`, que casam com as keywords
+> da PixelX. Ela captura esses valores no `blur`, como faz com qualquer
+> formulário da página. Isso é **captura de dados**, não evento de Lead, e não
+> há como impedir pelo site sem dar nomes sem significado aos campos.
+
+Para mudar a decisão, uma linha em `exit-popup-kit/exit-popup.js`:
 
 ```js
-cppemTracking.state()             // { leadMode, leadEnviado, pixelPronto }
-cppemTracking.isPhone('...')      // testa a regra de telefone
-cppemTracking.toE164('...')       // confere a normalização
+stopSubmitPropagation: false   // o popup passa a poder virar Lead
 ```
+
+E aí garanta **exatamente um** emissor: ou a regra do painel, ou uma chamada
+sua — nunca as duas.
+
+### O acoplamento entre os dois formulários
+
+Uma string, dois arquivos:
+
+```js
+// script.js
+exitPopupPrefix: "alvorada"          // grava alvorada_lead_converted no checkout
+// exit-popup-kit/exit-popup.js
+prefix: "alvorada"                   // lê a mesma chave e se cala para sempre
+```
+
+É o que impede o popup de oferecer grupo gratuito a quem acabou de ir para o
+checkout. Se os dois prefixos divergirem, nada quebra visivelmente — o popup
+simplesmente volta a aparecer para quem já comprou.
+
+> O prefixo **não pode continuar `"cppem"`**, que é o do kit original: as
+> landings da CPPEM dividem domínio, e o prefixo repetido faria uma travar o
+> popup da outra.
+
+### Formatação do telefone: nenhuma, e isso é intencional
+
+O site **nunca reescreve o valor do campo de telefone**. A máscara é
+responsabilidade da PixelX: o campo carrega `class="pxa_mask_phone"`
+([§6.1](#61-como-a-pixelx-identifica-os-campos)) e o formato vem de
+`phone_mask`, configurado no painel. Máscara própria brigaria com a dela e
+quebraria a captura no `blur`.
+
+Consequência direta na validação: ela precisa aguentar o campo em qualquer um
+dos três formatos — mascarado, cru ou já normalizado com `+55` — e por isso
+conta **dígitos** depois de remover o país pelo `+` literal
+([§7.7](#77-validar-o-telefone-pelo-length-da-string--o-erro-mais-traiçoeiro)).
+
+> **Sobre E.164.** No PMPE a normalização vive no payload da chamada manual.
+> Aqui não existe chamada manual, então não existe onde normalizar pelo site:
+> quem lê o telefone é a PixelX, direto do campo. Se o valor estiver chegando
+> ao Meta como `+81…` em vez de `+55…`, a correção é ligar `phone_mask` no
+> painel — **não** escrever uma máscara no site.
+
+### Nomenclatura
+
+Conferida item a item contra a [§6.0](#60--a-nomenclatura-não-é-cosmética--ela-é-o-vínculo).
+Nada aqui é preferência de estilo:
+
+| Elemento | Valor |
+|---|---|
+| `<form>` | `name="lead_form"` · `id="IPEyzyfmJhKQEYIXAlZH"` · `novalidate` |
+| nome | `id="lead_name"` · `name="name"` |
+| e-mail | `id="lead_email"` · `name="email"` |
+| telefone | `id="lead_phone"` · `name="phone"` · `class="pxa_mask_phone"` |
+| botão | `type="submit"` · `id="lead_submit"` |
+| erros | `data-error-for="name"` · `"email"` · `"phone"` |
+
+As chaves da **planilha** (`nome`, `email`, `whatsapp`) continuam em português
+de propósito: são nomes de coluna do Google Sheets e não têm relação nenhuma
+com a nomenclatura da §6.0, que governa os atributos do HTML. Trocar uma pela
+outra quebra ou a planilha ou a conversão.
+
+### Os valores específicos deste site
+
+Todos vivem no bloco `CONFIG`, no topo do [script.js](script.js) — é o que a
+[§8.1](#81-valores-que-são-específicos-de-cada-site) manda trocar ao replicar:
+
+| Chave | Valor |
+|---|---|
+| `formId` | `IPEyzyfmJhKQEYIXAlZH` (também no `index.html` — **os dois lugares**) |
+| `sheetEndpoint` / `sheetTab` | Apps Script · aba `OPERACAO` |
+| `redirectUrl` | `checkout.cppem.com.br/pay/op-alvorada-11-ingresso` |
+| `redirectDelay` | `1500` ms ([§7.6](#76-formreset-e-redirecionamento-cedo-demais)) |
+| `phoneMode` | `celular_br` ([§8.6](#86-a-validação-de-telefone-não-é-universal)) |
+| Loader sGTM | `sgtm.cppem.com.br/metrics/` · container `GTM-PJ379FLQ` |
+
+Os ids dos campos **não** entram no `CONFIG`: são canônicos, iguais em todas as
+landings, e ficam como literais no código justamente para o validador
+conseguir conferi-los contra o HTML.
 
 ### Verificação automatizada
 
-**24 testes** em Chrome real, com uma PixelX falsa que conta cada Lead recebido
-e um espião no listener do `<form>` simulando a regra do painel:
+```bash
+node validar-tracking.js .
+```
 
-- telefone: rejeita incompleto, fixo e a contagem enganosa do `+55`; aceita
-  mascarado, cru e DDD 55
-- E.164: adiciona `+55`, não duplica país, preserva DDD 55
-- submit inválido → **zero** Lead, não redireciona, mostra os erros
-- submit válido → **exatamente 1** Lead, com nome, e-mail minúsculo e E.164
-- regra de submit do painel → **não dispara**
-- envio repetido → continua **1** Lead e **1** redirect
+**26/26, nenhuma falha.** O validador é o mesmo arquivo das outras landings,
+sem adaptação.
 
-### ⚠️ Pendências fora do escopo de tracking
+> Duas das 26 verificações — "todo `getElementById` existe no HTML" e "chaves de
+> erro casam com `data-error-for`" — extraem os valores por regex com **aspas
+> duplas**. Enquanto este script usava aspas simples, elas passavam **no vácuo**:
+> capturavam 0 de 24 `getElementById` e 0 de 7 `setError`, e ficavam verdes sem
+> conferir nada. O script foi alinhado à forma canônica e hoje elas verificam
+> 21 ids e 3 chaves de erro de verdade.
 
-Duas coisas que encontrei na auditoria, **não corrigidas** por serem do
-backend de dados e não do rastreamento:
+Além do validador estático, o comportamento foi verificado em Chrome real com
+**22 asserções**, usando espiões registrados nos dois `<form>` para simular a
+regra de submit do painel:
 
-1. **O corpo do POST é `x-www-form-urlencoded`**, mas o
-   [google-apps-script.js](../pmpe/google-apps-script.js) das outras landings
-   faz `JSON.parse(e.postData.contents)`. Se a implantação usada aqui for a
-   mesma, o parse falha e **nada é gravado**. As outras landings enviam JSON.
-2. **A chave do telefone é `whatsapp`**, e o Apps Script lê `dados.telefone`.
-   Mesmo com o parse funcionando, a coluna Telefone chegaria vazia.
+- venda inválida → **zero** Lead no `<form>`, zero envio, zero redirect
+- venda válida → **exatamente 1** Lead, 1 envio para a aba `OPERACAO`
+- reenvio → continua 1 envio (guarda de idempotência)
+- telefone: as seis linhas da tabela da [§7.7](#77-validar-o-telefone-pelo-length-da-string--o-erro-mais-traiçoeiro)
+- o site **não** reescreve o valor do campo de telefone, nem na venda nem no popup
+- campos **não** são limpos antes do redirecionamento
+- exit popup válido → **zero** Lead no `<form>`, 1 envio para `OPERACAO_COMUNIDADE`
+- exit popup → nenhum evento com "lead" no dataLayer
+- `blockWhen` trava o popup enquanto o modal de checkout está aberto
+- enviar a venda grava `alvorada_lead_converted` e cala o popup
 
-O `ENDPOINT` aponta para `?aba=CASA` da **mesma implantação** usada por PMPE e
-UniCV. O roteamento por aba só funciona depois da nova implantação do Apps
-Script corrigido — uma só resolve para todas as landings.
+### Pendências fora do escopo do site
+
+Estas não dão para resolver no código ([§13](#13-o-que-não-dá-para-controlar-pelo-site)):
+
+- [ ] Confirmar no painel que existe **uma única** regra de conversão para
+      `IPEyzyfmJhKQEYIXAlZH`, e que ela é de **submit** — regra de clique
+      duplicaria.
+- [ ] Confirmar que `phone_mask` está configurado, senão a máscara nem carrega
+      e o telefone chega ao Meta sem o código do país.
+- [ ] Teste de contagem ponta a ponta ([§10.6](#106-contagem-ponta-a-ponta)):
+      1 envio = 1 Lead.
+- [ ] Criar a aba **`OPERACAO_COMUNIDADE`** na planilha do Apps Script. É o
+      destino do exit popup; sem ela os cadastros do grupo se perdem calados
+      (o `fetch` é `no-cors`, então nem erro aparece).
+- [ ] Confirmar que o grupo de WhatsApp do `redirect` do popup é o certo para
+      esta campanha — hoje aponta para o mesmo da landing PMPE.
+- [ ] Conferir no preview do GTM que `exit_popup_submit` **não** está ligado à
+      tag de `Lead`.
 
 ### Arquivos
 
-- [index.html](index.html) — loader do GTM no `<head>`, `#leadForm` no modal
-- [script.js](script.js) — `LEAD_MODE`, `trackLead()`, `waitForPixel()`,
-  `toE164()` e a barreira de submit
+- [index.html](index.html) — loader do GTM no `<head>`, `<form>` do painel no
+  modal de checkout, HTML do exit popup depois dele
+- [script.js](script.js) — `CONFIG` e `LEAD_MODE` no topo, as duas barreiras no fim
+- [exit-popup-kit/](exit-popup-kit/) — kit portátil do popup, igual ao do PMPE:
+  só o bloco de tema do CSS e o `CONFIG` do JS foram trocados. Guia próprio em
+  [LEIAME.md](exit-popup-kit/LEIAME.md)
+- [validar-tracking.js](validar-tracking.js) — checklist da §11 automatizado
+- [styles.css](styles.css) — visual da landing; no fim, os ajustes do popup que
+  não cabiam numa variável do kit
+
+Para replicar em outro site, **não copie o `script.js` deste projeto** — ele tem
+o id do form, o endpoint da planilha e a URL de checkout da CPPEM embutidos. Use
+o [template portável de §9](#9-template-portável), com a adaptação para Modelo A.
