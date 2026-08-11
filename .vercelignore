@@ -1,0 +1,21 @@
+# Fora do deploy — tudo aqui é fonte ou documentação, nada é servido.
+#
+# As fotos originais de câmera (6 a 8 MB cada) continuam versionadas como
+# fonte, mas quem vai para produção é o derivado .webp gerado por
+# scripts/otimizar-imagens.py. Sem esta exclusão, cada deploy carregaria
+# ~45 MB que nenhum visitante chega a pedir.
+
+public/*.jpg
+public/*.JPG
+public/logotipobepi.png
+public/iniciante.png
+public/experiente.png
+public/intermediario.png
+public/emblema-leao.png
+
+# Ferramentas e documentação
+scripts/
+validar-tracking.js
+TRACKING.md
+exit-popup-kit/LEIAME.md
+exit-popup-kit/exemplo.html

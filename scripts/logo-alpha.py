@@ -30,6 +30,12 @@ PISO = 0.06
 # translúcido só porque o ouro não é branco.
 TETO = 0.62
 
+# A logo aparece com 172px no rodapé e 132px na navbar. 700px cobre telas 2x
+# com folga; o original de 1362px eram 400 KB para mostrar um oitavo disso.
+# Continua PNG, e não WebP, porque este arquivo também é a máscara CSS que
+# recorta o brilho — não vale arriscar suporte a mask-image com WebP.
+LARGURA_WEB = 700
+
 
 def main() -> None:
     img = Image.open(ORIGEM).convert("RGB")
@@ -52,16 +58,21 @@ def main() -> None:
     if caixa:
         out = out.crop(caixa)
 
-    out.save(DESTINO)
-    print(f"{DESTINO.name}: {out.width}x{out.height}")
-
-    # Só a cabeça do leão, para servir de marca d'água no fundo das seções.
+    # O leão sai ANTES do downscale: ele vira marca d'água de 620px de altura,
+    # e recortá-lo da versão já reduzida entregaria um emblema borrado.
     leao = out.crop((0, 0, int(out.width * 0.33), out.height))
     caixa_leao = leao.getbbox()
     if caixa_leao:
         leao = leao.crop(caixa_leao)
     leao.save(EMBLEMA)
     print(f"{EMBLEMA.name}: {leao.width}x{leao.height}")
+
+    if out.width > LARGURA_WEB:
+        altura = round(out.height * LARGURA_WEB / out.width)
+        out = out.resize((LARGURA_WEB, altura), Image.LANCZOS)
+
+    out.save(DESTINO)
+    print(f"{DESTINO.name}: {out.width}x{out.height}")
 
 
 if __name__ == "__main__":
