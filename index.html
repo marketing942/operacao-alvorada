@@ -57,9 +57,9 @@
       <i></i> Faltam <b id="navDays">--</b> dias
     </span>
 
-    <button class="btn btn--gold btn--sm shine js-open" type="button">
+    <a class="btn btn--gold btn--sm shine" href="#ingressos">
       <span>Garantir minha vaga</span>
-    </button>
+    </a>
 
   </div>
 </header>
@@ -90,9 +90,9 @@
     </p>
 
     <div class="hero__cta anim d4">
-      <button class="btn btn--gold btn--lg shine js-open" type="button">
+      <a class="btn btn--gold btn--lg shine" href="#ingressos">
         <span>Quero minha vaga na Alvorada</span>
-      </button>
+      </a>
       <a class="btn btn--ghost btn--lg" href="#incluso"><span>Ver o que está incluso</span></a>
     </div>
 
@@ -154,8 +154,97 @@
   </div>
 </div>
 
+<!-- ================= INGRESSOS =================
+     Dois produtos, dois checkouts. Cada botão carrega o seu em data-checkout,
+     e o data-produto é o que vai para a coluna da planilha — o script lê os
+     dois no clique. O <form> continua sendo UM só (TRACKING.md §6.0): quem
+     dispara o Lead é a regra do painel, e ela é vinculada ao id do formulário,
+     não ao produto escolhido. -->
+<section class="section" id="ingressos">
+  <div class="container">
+    <div class="section__head">
+      <span class="eyebrow">Escolha o seu ingresso</span>
+      <h2 class="section__title">Duas formas de entrar<br>na <span class="gold">operação</span></h2>
+      <p class="section__lead">
+        A madrugada é a mesma para os dois. O que muda é o que você leva
+        embora — e quem senta na primeira fila.
+      </p>
+    </div>
+
+    <div class="planos">
+
+      <!-- ---------- PADRÃO ---------- -->
+      <article class="plano">
+        <header class="plano__head">
+          <span class="plano__tag">1º lote</span>
+          <h3 class="plano__nome">Ingresso Padrão</h3>
+          <p class="plano__desc">A cadeira na sede e a operação inteira, do começo ao amanhecer.</p>
+        </header>
+
+        <ul class="plano__lista">
+          <li>Sua cadeira na sede, com estrutura para a noite inteira;</li>
+          <li>Kit do operador no credenciamento;</li>
+          <li>Professores ao vivo a madrugada inteira;</li>
+          <li>Lanche na virada, por nossa conta;</li>
+          <li>Corridão com a tropa às 05h00;</li>
+          <li>Certificado e foto oficial da 11ª edição;</li>
+        </ul>
+
+        <div class="plano__rodape">
+          <div class="plano__preco">
+            <span class="plano__preco-label">Ingresso no 1º lote</span>
+            <b><i>R$</i>47,90</b>
+            <span class="plano__preco-nota" id="precoNotaPadrao">20 ingressos neste lote</span>
+          </div>
+          <button class="btn btn--ghost btn--lg btn--block js-open" type="button"
+                  data-produto="Ingresso Padrão — 1º lote"
+                  data-checkout="https://checkout.cppem.com.br/pay/op-alvorada-11-ingresso">
+            <span>Quero o padrão</span>
+          </button>
+        </div>
+      </article>
+
+      <!-- ---------- VIP ---------- -->
+      <article class="plano plano--vip">
+        <span class="plano__selo">Mais completo</span>
+        <header class="plano__head">
+          <span class="plano__tag">Vagas limitadas</span>
+          <h3 class="plano__nome">Ingresso VIP</h3>
+          <p class="plano__desc">Tudo do padrão, mais o que só 50 pessoas vão levar.</p>
+        </header>
+
+        <ul class="plano__lista">
+          <li class="plano__tudo">Tudo do Ingresso Padrão;</li>
+          <li>Dog tag militar da Operação Alvorada;</li>
+          <li>Apostila digital;</li>
+          <li>Momento exclusivo com o Prof. Everton Mota e os convidados especiais;</li>
+        </ul>
+
+        <div class="plano__rodape">
+          <div class="plano__preco">
+            <span class="plano__preco-label">Ingresso VIP</span>
+            <b><i>R$</i>147</b>
+            <span class="plano__preco-nota">Apenas 50 pessoas</span>
+          </div>
+          <!-- 🔴 PENDENTE: o checkout do VIP ainda NÃO existe. A URL abaixo é um
+               palpite que segue a convenção do ingresso padrão. NÃO PUBLICAR
+               antes de trocar pelo link real — comprador do VIP cairia num 404
+               depois de já ter deixado nome, e-mail e WhatsApp.
+               É o único lugar do projeto onde esse endereço aparece. -->
+          <button class="btn btn--gold btn--lg btn--block shine js-open" type="button"
+                  data-produto="Ingresso VIP"
+                  data-checkout="https://checkout.cppem.com.br/pay/op-alvorada-11-vip">
+            <span>Quero o VIP</span>
+          </button>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
 <!-- ================= CORRIDÃO ================= -->
-<section class="section section--tight" id="operacao">
+<section class="section section--tight section--alt" id="operacao">
   <div class="container">
     <div class="corridao">
       <i class="corridao__mark" aria-hidden="true"></i>
@@ -198,22 +287,22 @@
 
     <div class="lote">
       <div class="lote__head">
-        <span class="lote__title">1º lote — 150 cadeiras, o mais barato de todos</span>
+        <span class="lote__title">1º lote — 20 ingressos, o mais barato de todos</span>
         <span class="lote__left" id="loteLeft">carregando…</span>
       </div>
-      <div class="lote__bar" role="progressbar" aria-label="Cadeiras do 1º lote já ocupadas"
+      <div class="lote__bar" role="progressbar" aria-label="Ingressos do 1º lote já ocupados"
            aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="loteBar">
         <i id="loteFill"></i>
       </div>
       <p class="lote__note">
-        São 150 cadeiras neste lote, de um total de 250 no evento. Quando ele fechar,
+        São 20 ingressos neste lote, de um total de 250 no evento. Quando ele fechar,
         o valor sobe — e não volta atrás. Nas edições anteriores as últimas cadeiras
         foram embora antes da semana do evento.
       </p>
     </div>
 
     <div class="center">
-      <button class="btn btn--gold btn--lg shine js-open" type="button"><span>Garantir vaga no 1º lote</span></button>
+      <a class="btn btn--gold btn--lg shine" href="#ingressos"><span>Ver os ingressos</span></a>
     </div>
   </div>
 </section>
@@ -286,7 +375,7 @@
     </div>
 
     <div class="center">
-      <button class="btn btn--gold btn--lg shine js-open" type="button"><span>Quero estar nessa noite</span></button>
+      <a class="btn btn--gold btn--lg shine" href="#ingressos"><span>Quero estar nessa noite</span></a>
     </div>
   </div>
 </section>
@@ -512,7 +601,7 @@
   <div class="container final__inner">
     <h2>Daqui a um ano você vai lembrar<br>da noite em que <span class="gold">decidiu</span>.</h2>
     <p>26 e 27 de setembro · 19h às 07h · Sede CPPEM · 250 cadeiras.</p>
-    <button class="btn btn--gold btn--lg shine js-open" type="button"><span>Garantir minha vaga agora</span></button>
+    <a class="btn btn--gold btn--lg shine" href="#ingressos"><span>Garantir minha vaga agora</span></a>
     <span class="final__note">1º lote enquanto durar — depois o valor sobe.</span>
   </div>
 </section>
@@ -578,9 +667,9 @@
 <div class="dock" id="dock">
   <div class="dock__info">
     <b>1º lote aberto</b>
-    <span id="dockLeft">150 cadeiras</span>
+    <span id="dockLeft">20 ingressos</span>
   </div>
-  <button class="btn btn--gold shine js-open" type="button"><span>Garantir vaga</span></button>
+  <a class="btn btn--gold shine" href="#ingressos"><span>Garantir vaga</span></a>
 </div>
 
 <!-- ================= MODAL ================= -->
@@ -593,7 +682,11 @@
     <h3 id="modalTitle" class="modal__title">Preencha seus dados<br>e vá para o checkout</h3>
     <p class="modal__lead">
       Falta só um passo para garantir sua cadeira na <strong>Operação Alvorada</strong>.
-      Preencha os dados abaixo e você é levado direto para o pagamento do 1º lote.
+      Preencha os dados abaixo e você é levado direto para o pagamento.
+    </p>
+
+    <p class="modal__produto">
+      Ingresso escolhido: <b id="modalProduto">Ingresso Padrão — 1º lote</b>
     </p>
 
     <!-- NOMENCLATURA CANÔNICA (TRACKING.md §6.0) — não traduzir os nomes.
@@ -602,8 +695,8 @@
          destino certo. Não trocar sem antes ajustar o painel. -->
     <form class="form" name="lead_form" id="IPEyzyfmJhKQEYIXAlZH" novalidate>
       <div class="field">
-        <label for="lead_name">Nome completo</label>
-        <input type="text" id="lead_name" name="name" placeholder="Seu nome completo" required autocomplete="name">
+        <label for="lead_name">Nome</label>
+        <input type="text" id="lead_name" name="name" placeholder="Seu nome" required autocomplete="name">
         <span class="err" data-error-for="name"></span>
       </div>
       <div class="field">
@@ -643,10 +736,12 @@
     <h2 class="xp__title" id="xp-title">Vai sair sem a <span>senha</span> da madrugada?</h2>
     <p class="xp__sub">Entre no grupo oficial e receba:</p>
 
+    <!-- Uma linha por benefício: em 320px cada quebra extra empurra o botão
+         para fora da dobra do popup, que já roda no teto do max-height. -->
     <ul class="xp__benefits">
-      <li>Aviso em primeira mão quando o 1º lote fechar e o valor subir.</li>
-      <li>Os convidados da 11ª edição anunciados antes de irem para a página.</li>
-      <li>Conteúdo diário de PMPE e PCPE, questões e materiais gratuitos.</li>
+      <li>Aviso antes de o 1º lote fechar e o valor subir.</li>
+      <li>Os convidados da 11ª edição em primeira mão.</li>
+      <li>Conteúdo diário de PMPE e PCPE.</li>
     </ul>
 
     <form class="xp__form" novalidate>

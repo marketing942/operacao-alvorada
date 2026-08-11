@@ -9,13 +9,14 @@ o equivalente a ~1 MB de pixels, com o LCP no chão em conexão móvel.
 Os originais continuam no repositório como fonte; quem vai para produção é o
 derivado `.webp` ao lado (e o `.vercelignore` mantém o original fora do deploy).
 
-Larguras escolhidas a partir do tamanho de exibição real no grid de 1180px,
-com folga para telas 2x:
+Larguras conferidas com emulação de dispositivo (320/360/390/414/768/1440 px,
+dpr 1 a 3). O caso que manda não é o desktop: é o tablet em 768 px com dpr 2,
+onde a grade cai para 2 colunas e o destaque passa a ocupar a largura toda.
 
-    faixa larga (span 4)   1180 css px  ->  1800
-    destaque   (span 2x2)   586 css px  ->  1200
-    células    (span 1)     283 css px  ->   700
-    retrato do mentor       370 css px  ->   900
+    faixa larga (span 4)   1180 css px @2x  ->  2200
+    destaque   (span 2x2)   724 css px @2x  ->  1500
+    células    (span 1)     362 css px @2x  ->   800
+    retrato do mentor       328 css px @3x  ->  1000
 
 Uso:  python scripts/otimizar-imagens.py
 """
@@ -31,13 +32,13 @@ QUALIDADE = 80
 
 # (arquivo de origem, largura máxima do derivado)
 TRABALHOS = [
-    ("IMG_5428.JPG", 1200),            # destaque do grid, 2x2
-    ("20170508-IMG_5551.jpg", 700),
-    ("20170508-IMG_5694.jpg", 700),
-    ("20170508-IMG_5746.jpg", 700),
-    ("20170508-IMG_5770.jpg", 700),
-    ("20170508-IMG_5972.jpg", 1800),   # faixa larga, ocupa as 4 colunas
-    ("everton-mentor.jpg", 900),
+    ("IMG_5428.JPG", 1500),            # destaque do grid, 2x2
+    ("20170508-IMG_5551.jpg", 800),
+    ("20170508-IMG_5694.jpg", 800),
+    ("20170508-IMG_5746.jpg", 800),
+    ("20170508-IMG_5770.jpg", 800),
+    ("20170508-IMG_5972.jpg", 2200),   # faixa larga, ocupa as 4 colunas
+    ("everton-mentor.jpg", 1000),
     # PNGs com alfa: o WebP preserva a transparência e corta ~85% do peso
     ("intermediario.png", 700),
     ("emblema-leao.png", 700),

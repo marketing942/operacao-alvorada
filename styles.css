@@ -657,8 +657,13 @@ strong, b { font-weight: 700; color: var(--text); }
 .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 56px; }
 
 .medal { text-align: center; }
+/* overflow:hidden além do clip-path: o .medal__sheen gira, e a caixa de um
+   elemento rotacionado é maior que ele (128px viram ~181px na diagonal). O
+   clip-path corta a PINTURA, mas não contém o overflow de layout — sem isto o
+   documento ficava alguns px mais largo que a viewport em telas estreitas, e a
+   página rolava de lado. */
 .medal__body {
-  position: relative; width: 152px; height: 172px; margin: 0 auto;
+  position: relative; overflow: hidden; width: 152px; height: 172px; margin: 0 auto;
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
   clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
   transition: transform var(--t);
@@ -932,8 +937,23 @@ strong, b { font-weight: 700; color: var(--text); }
   font-family: var(--font-title); font-size: 25px; font-weight: 800; line-height: 1.12;
   letter-spacing: 1px; text-transform: uppercase; margin: 14px 0 12px;
 }
-.modal__lead { font-size: 15px; color: var(--text-dim); line-height: 1.6; margin-bottom: 24px; }
+.modal__lead { font-size: 15px; color: var(--text-dim); line-height: 1.6; margin-bottom: 18px; }
 .modal__lead strong { color: var(--gold-light); }
+
+/* Com dois ingressos, o modal precisa dizer qual deles está sendo comprado —
+   senão o visitante só descobre no checkout. */
+.modal__produto {
+  margin-bottom: 22px; padding: 12px 16px;
+  background: rgba(175,146,86,.08);
+  box-shadow: inset 0 0 0 1px var(--border-active);
+  clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+  font-size: 11px; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--text-mute);
+}
+.modal__produto b {
+  display: block; margin-top: 3px; letter-spacing: 1.2px;
+  font-family: var(--font-title); font-size: 14px; color: var(--gold-light);
+}
 .modal__foot { margin-top: 14px; font-size: 12.5px; color: var(--text-mute); text-align: center; }
 
 .field { margin-bottom: 16px; }
@@ -1100,3 +1120,136 @@ strong, b { font-weight: 700; color: var(--text); }
 /* O grão fixo do body (z-index 210) passaria por cima do popup, que vive em
    9000. Subir o popup mantém a textura só onde ela pertence. */
 .xp { z-index: 9500; }
+
+/* =========================================================
+   INGRESSOS — os dois planos
+   ========================================================= */
+/* stretch, e não start: com os cards na mesma altura, o `flex:1` da lista
+   empurra preço e botão para a mesma linha nos dois, mesmo o VIP tendo menos
+   itens. Alinhar o preço é o que deixa a comparação legível de relance. */
+.planos {
+  display: grid; grid-template-columns: repeat(2, 1fr); gap: 22px;
+  align-items: stretch; max-width: 940px; margin-inline: auto;
+}
+
+.plano {
+  position: relative; display: flex; flex-direction: column;
+  background: linear-gradient(180deg, var(--bg-3), var(--bg-2));
+  box-shadow: inset 0 0 0 1px var(--border);
+  clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 22px 100%, 0 calc(100% - 22px));
+  transition: transform var(--t), box-shadow var(--t);
+}
+.plano:hover { transform: translateY(-5px); box-shadow: inset 0 0 0 1px var(--border-active); }
+
+/* O VIP é o destaque: aro de ouro e um clarão saindo do topo do card. */
+.plano--vip {
+  background:
+    radial-gradient(520px 260px at 50% 0%, rgba(175,146,86,.16), transparent 70%),
+    linear-gradient(180deg, #1B1B23, var(--bg-2));
+  box-shadow: inset 0 0 0 1px rgba(175,146,86,.45);
+}
+.plano--vip:hover { box-shadow: inset 0 0 0 1px var(--gold); }
+
+.plano__selo {
+  position: absolute; top: 0; right: 0; z-index: 2;
+  padding: 7px 16px 7px 20px;
+  background: linear-gradient(168deg, var(--gold-pale), var(--gold) 45%, var(--gold-dark));
+  color: #0B0A08; font-size: 10px; font-weight: 700;
+  letter-spacing: 2.6px; text-transform: uppercase;
+  clip-path: polygon(14px 0, 100% 0, 100% 100%, 0 100%);
+}
+
+.plano__head { padding: 34px 32px 22px; border-bottom: 1px solid var(--border); }
+.plano--vip .plano__head { border-bottom-color: rgba(175,146,86,.32); }
+.plano__tag {
+  display: inline-block; margin-bottom: 12px; padding: 5px 12px;
+  background: rgba(175,146,86,.12); box-shadow: inset 0 0 0 1px var(--border-active);
+  font-size: 10px; font-weight: 700; letter-spacing: 2.6px;
+  text-transform: uppercase; color: var(--gold);
+}
+.plano__nome {
+  font-family: var(--font-title); font-size: clamp(24px, 3.2vw, 32px); font-weight: 800;
+  line-height: 1.04; letter-spacing: 1px; text-transform: uppercase; color: var(--text);
+}
+.plano--vip .plano__nome {
+  background: linear-gradient(180deg, var(--gold-pale), var(--gold) 55%, var(--gold-dark));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.plano__desc { margin-top: 10px; font-size: 15.5px; line-height: 1.6; color: var(--text-dim); }
+
+/* A lista cresce e empurra o rodapé para baixo, para os dois cards
+   terminarem com o preço na mesma linha mesmo com contagens diferentes. */
+.plano__lista { list-style: none; flex: 1; display: grid; gap: 14px; padding: 26px 32px 28px; align-content: start; }
+.plano__lista li {
+  position: relative; padding-left: 32px;
+  font-size: 15.5px; line-height: 1.55; color: var(--text-dim);
+}
+.plano__lista li::before {
+  content: '✓'; position: absolute; left: 0; top: 0;
+  width: 21px; height: 21px; display: grid; place-items: center;
+  font-family: var(--font-title); font-size: 12px; font-weight: 800;
+  color: var(--gold); background: rgba(175,146,86,.14);
+  box-shadow: inset 0 0 0 1px rgba(175,146,86,.4);
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+}
+/* "Tudo do Ingresso Padrão" é herança, não item — merece peso próprio */
+.plano__lista .plano__tudo { color: var(--gold-light); font-weight: 700; }
+
+.plano__rodape { padding: 0 32px 32px; }
+.plano__preco {
+  text-align: center; padding: 22px 16px 20px; margin-bottom: 18px;
+  background: linear-gradient(180deg, rgba(10,10,11,.55), rgba(10,10,11,.2));
+  box-shadow: inset 0 0 0 1px var(--border);
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+}
+.plano--vip .plano__preco { box-shadow: inset 0 0 0 1px rgba(175,146,86,.34); }
+.plano__preco-label {
+  display: block; margin-bottom: 8px;
+  font-size: 10px; font-weight: 700; letter-spacing: 2.8px;
+  text-transform: uppercase; color: var(--text-mute);
+}
+.plano__preco b {
+  display: block; font-family: var(--font-title);
+  font-size: clamp(38px, 5.6vw, 52px); font-weight: 800; line-height: 1; letter-spacing: .5px;
+  background: linear-gradient(180deg, var(--gold-pale), var(--gold) 52%, var(--gold-dark));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  text-shadow: 0 0 34px rgba(175,146,86,.22);
+}
+.plano__preco b i { font-style: normal; font-size: .48em; margin-right: 4px; vertical-align: .42em; }
+.plano__preco-nota {
+  display: block; margin-top: 10px;
+  font-size: 12px; font-weight: 700; letter-spacing: 1.4px;
+  text-transform: uppercase; color: var(--danger);
+}
+
+@media (max-width: 880px) {
+  .planos { grid-template-columns: 1fr; max-width: 520px; }
+  /* No empilhamento o VIP vem primeiro: é a oferta que o cliente quer à frente,
+     e no desktop ele já está à direita, que é o fim natural da leitura. */
+  .plano--vip { order: -1; }
+  .plano__head { padding: 30px 24px 20px; }
+  .plano__lista { padding: 24px 24px 26px; }
+  .plano__rodape { padding: 0 24px 28px; }
+}
+
+/* Tela baixa: o popup roda no teto do max-height do kit (92vh) e o botão cai
+   abaixo da dobra interna. Comprimir os respiros devolve o CTA para a área
+   visível sem mexer no kit nem cortar conteúdo. */
+@media (max-height: 780px) {
+  .xp__box { padding: 1.3rem 1.1rem 1rem; }
+  .xp__eyebrow { margin-bottom: .55rem; padding: .32rem .8rem; }
+  .xp__title { font-size: 1.3rem; }
+  .xp__sub { margin-bottom: .6rem; font-size: .84rem; }
+  .xp__benefits { padding: .65rem .85rem; margin-bottom: .8rem; }
+  .xp__benefits li { font-size: .84rem; line-height: 1.35; }
+  .xp__benefits li + li { margin-top: .4rem; }
+  .xp__field { margin-bottom: .5rem; }
+  .xp__field input { height: 44px; }
+  .xp__note { margin-top: .45rem; }
+  .xp__decline { margin-top: .55rem; }
+}
+/* O letter-spacing que dei ao CTA para casar com os botões do site quebra o
+   rótulo em duas linhas quando a caixa fica estreita. */
+@media (max-width: 360px) {
+  .xp__cta { letter-spacing: 1.2px; font-size: .92rem; }
+}

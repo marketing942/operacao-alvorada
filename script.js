@@ -30,9 +30,14 @@
     sheetEndpoint: "https://script.google.com/macros/s/AKfycbxdFplWVSfhTjvyIA7HIWb645xRjGNhBVhTdTf5UMjo0lSpW_A_jCuys0qB4uImKXPQ/exec?aba=OPERACAO",
     sheetTab: "OPERACAO",
     pagina: "Operação Alvorada",
-    produto: "Operação Alvorada 11ª Edição",
 
-    redirectUrl: "https://checkout.cppem.com.br/pay/op-alvorada-11-ingresso",
+    /* Dois produtos, dois checkouts. Cada botão de ingresso carrega o seu em
+       data-checkout/data-produto (index.html) — estes aqui são só o destino de
+       segurança para um CTA que esqueça os atributos, para nunca sobrar um
+       botão que leve a lugar nenhum. */
+    produtoPadrao: "Ingresso Padrão — 1º lote",
+    checkoutPadrao: "https://checkout.cppem.com.br/pay/op-alvorada-11-ingresso",
+
     redirectDelay: 1500,     // §7.6 — abaixo de ~1s começa a perder eventos
     phoneMode: "celular_br", // §8.6 — "celular_br" | "celular_ou_fixo_br" | "internacional"
 
@@ -150,36 +155,41 @@
     tickCountdown();
 
     /* ---------- barra do 1º lote ---------- */
-    /* O 1º lote são 150 cadeiras — não as 250 da sede, que é a capacidade total
-       do evento somando todos os lotes.
+    /* O 1º lote são 20 ingressos do tipo padrão — não as 250 da sede, que é a
+       capacidade total do evento somando todos os lotes. O VIP é um produto
+       à parte, com 50 vagas fixas, e não entra nesta projeção.
 
        A barra é ancorada num número REAL e cresce sozinha daí até a data do
        evento: em DATA_ANCORA havia OCUPADAS_ANCORA cadeiras vendidas, e a
        projeção caminha linearmente até OCUPADAS_TETO na véspera da abertura.
        É determinística pela data — recarregar a página nunca faz o número
        andar para trás. Para recalibrar com a venda real, basta atualizar as
-       duas constantes da âncora. */
-    var LOTE_CADEIRAS   = 150;
+       duas constantes da âncora — e elas PRECISAM ser recalibradas: as
+       anteriores (68 de 150) eram uma contagem real do lote antigo, e aqui
+       foram só reescaladas na mesma proporção. */
+    var LOTE_INGRESSOS  = 20;
     /* fim do dia 31/07, não o começo: antes da âncora o avanço é travado em 0,
        então o dia inteiro mostra exatamente as 68 cadeiras contadas na mão. */
     var DATA_ANCORA     = new Date("2026-07-31T23:59:00-03:00").getTime();
-    var OCUPADAS_ANCORA = 68;
-    var OCUPADAS_TETO   = 146;   // nunca 150: sempre sobra a última chance
+    var OCUPADAS_ANCORA = 9;
+    var OCUPADAS_TETO   = 19;    // nunca 20: sempre sobra a última chance
 
     var loteFill = document.getElementById("loteFill");
     var loteBar  = document.getElementById("loteBar");
     var loteLeft = document.getElementById("loteLeft");
     var dockLeft = document.getElementById("dockLeft");
+    var precoNota = document.getElementById("precoNotaPadrao");
 
     if (loteFill && loteLeft) {
       var span = alvo - DATA_ANCORA;
       var andado = Math.min(Math.max((Date.now() - DATA_ANCORA) / span, 0), 1);
       var ocupadas = Math.round(OCUPADAS_ANCORA + (OCUPADAS_TETO - OCUPADAS_ANCORA) * andado);
-      var restam = Math.max(LOTE_CADEIRAS - ocupadas, 1);
-      var pct = Math.round((ocupadas / LOTE_CADEIRAS) * 100);
+      var restam = Math.max(LOTE_INGRESSOS - ocupadas, 1);
+      var pct = Math.round((ocupadas / LOTE_INGRESSOS) * 100);
 
-      loteLeft.textContent = "restam " + restam + " de " + LOTE_CADEIRAS + " cadeiras";
-      if (dockLeft) dockLeft.textContent = "restam " + restam + " cadeiras";
+      loteLeft.textContent = "restam " + restam + " de " + LOTE_INGRESSOS + " ingressos";
+      if (dockLeft) dockLeft.textContent = "restam " + restam + " ingressos";
+      if (precoNota) precoNota.textContent = "restam " + restam + " de " + LOTE_INGRESSOS + " neste lote";
       if (loteBar) loteBar.setAttribute("aria-valuenow", String(pct));
 
       // pinta no próximo frame para a transição de largura acontecer
@@ -237,9 +247,29 @@
 
   /* ---------- modal ---------- */
   var modal = document.getElementById("modal");
+  var modalProduto = document.getElementById("modalProduto");
   var lastFocus = null;
 
-  function openModal() {
+  /* Qual ingresso o visitante escolheu. Começa no padrão e é sobrescrito pelo
+     botão que abriu o modal — é isto que decide o destino do redirect e o que
+     vai para a coluna "produto" da planilha. */
+  var selecionado = {
+    produto: CONFIG.produtoPadrao,
+    checkout: CONFIG.checkoutPadrao
+  };
+
+  function openModal(e) {
+    var botao = e && e.currentTarget ? e.currentTarget : null;
+    var destino = botao ? botao.getAttribute("data-checkout") : null;
+
+    if (destino) {
+      selecionado = {
+        produto: botao.getAttribute("data-produto") || CONFIG.produtoPadrao,
+        checkout: destino
+      };
+    }
+    if (modalProduto) modalProduto.textContent = selecionado.produto;
+
     lastFocus = document.activeElement;
     modal.classList.add("is-open");
     modal.setAttribute("aria-hidden", "false");
@@ -343,8 +373,12 @@
     clearError("email");
     clearError("phone");
 
-    if (nome.length < 3 || nome.indexOf(" ") === -1) {
-      setError("name", "Informe seu nome completo.");
+    /* Só exige que exista um nome. NÃO exigir sobrenome: muita gente se
+       cadastra como "Mark" ou "Itallo", e a regra anterior (precisar de um
+       espaço) barrava essas pessoas no último passo antes do checkout.
+       É também a regra do template portável do TRACKING.md §9. */
+    if (nome.length < 2) {
+      setError("name", "Informe seu nome.");
       ok = false;
     }
 
@@ -416,7 +450,7 @@
       sheet: CONFIG.sheetTab,
       tab: CONFIG.sheetTab,
       pagina: CONFIG.pagina,
-      produto: CONFIG.produto,
+      produto: selecionado.produto,
       /* As CHAVES abaixo são as colunas da planilha e continuam em português
          de propósito. Elas não têm relação com a nomenclatura da §6.0, que
          governa os atributos do HTML — trocar uma pela outra quebra ou a
@@ -448,7 +482,7 @@
        Também §7.6: NADA de form.reset() antes daqui — a PixelX lê os campos no
        blur e o reset a faria gravar valores vazios. */
     setTimeout(function () {
-      window.location.href = CONFIG.redirectUrl;
+      window.location.href = selecionado.checkout;
     }, CONFIG.redirectDelay);
   }
 
