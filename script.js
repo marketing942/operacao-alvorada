@@ -155,7 +155,7 @@
     tickCountdown();
 
     /* ---------- barra do 1º lote ---------- */
-    /* O 1º lote são 20 ingressos do tipo padrão — não as 250 da sede, que é a
+    /* O 1º lote são 20 ingressos do tipo padrão — não as 110 da sede, que é a
        capacidade total do evento somando todos os lotes. O VIP é um produto
        à parte, com 50 vagas fixas, e não entra nesta projeção.
 
@@ -201,7 +201,7 @@
   /* .ficha__item ficou de fora de propósito: a ficha mora na hero e já entra
      pela animação .anim d5 — dois fade-ins no mesmo bloco brigariam. */
   var targets = document.querySelectorAll(
-    ".section__head, .card, .final__inner, .cdown, .lote, .corridao, " +
+    ".section__head, .card, .final__inner, .cdown, .lote, " +
     ".duo__col, .faq__item, .lineup__card, .medal, .galeria figure"
   );
   Array.prototype.forEach.call(targets, function (el) { el.classList.add("reveal"); });

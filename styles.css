@@ -90,7 +90,6 @@ strong, b { font-weight: 700; color: var(--text); }
 .center { text-align: center; }
 
 .section { position: relative; padding: 108px 0; z-index: 2; }
-.section--tight { padding: 62px 0; }
 .section > .container { position: relative; z-index: 2; }
 
 .section--alt { background: linear-gradient(180deg, var(--bg), #0d0d11 45%, var(--bg)); }
@@ -452,45 +451,6 @@ strong, b { font-weight: 700; color: var(--text); }
 }
 .strip__track span::after { content: '◆'; font-size: 7px; color: var(--gold); letter-spacing: 0; }
 @keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-
-/* =========================================================
-   CORRIDÃO
-   ========================================================= */
-.corridao {
-  /* a altura acompanha o brasão: menos que isso e o clip-path do bloco corta
-     o anel de ouro em cima e a lâmina embaixo */
-  position: relative; overflow: hidden; min-height: 372px;
-  display: flex; align-items: center; padding: 46px 50px;
-  background:
-    radial-gradient(560px 220px at 0% 50%, rgba(175,146,86,.10), transparent 70%),
-    radial-gradient(360px 360px at 84% 50%, rgba(175,146,86,.16), transparent 66%),
-    linear-gradient(180deg, var(--bg-3), var(--bg-2));
-  box-shadow: inset 0 0 0 1px var(--border);
-  clip-path: polygon(0 0, calc(100% - 24px) 0, 100% 24px, 100% 100%, 24px 100%, 0 calc(100% - 24px));
-}
-/* O brasão de boina é o elemento gráfico do bloco: entra inteiro pela direita,
-   com halo de ouro atrás e uma máscara que o dissolve na direção do texto. */
-.corridao__mark {
-  position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
-  width: 324px; height: 324px; pointer-events: none; opacity: .55;
-  background: url('public/intermediario.webp') center / contain no-repeat;
-  filter: drop-shadow(0 18px 34px rgba(0,0,0,.65)) drop-shadow(0 0 34px rgba(175,146,86,.30));
-  mask-image: linear-gradient(90deg, transparent, #000 42%);
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 42%);
-}
-.corridao__badge {
-  display: inline-block; margin-bottom: 10px; padding: 5px 12px;
-  background: rgba(175,146,86,.12); box-shadow: inset 0 0 0 1px var(--border-active);
-  font-size: 10.5px; font-weight: 700; letter-spacing: 3px; color: var(--gold);
-}
-/* o texto para antes do brasão em vez de correr por baixo dele */
-.corridao__copy { position: relative; z-index: 1; max-width: 660px; }
-.corridao__copy h3 {
-  font-family: var(--font-title); font-size: clamp(22px, 3.1vw, 34px); font-weight: 800;
-  letter-spacing: 1px; text-transform: uppercase; margin-bottom: 12px; line-height: 1.06;
-}
-.corridao__copy p { color: var(--text-dim); font-size: 16.5px; max-width: 72ch; }
-.corridao__copy strong { color: var(--gold-light); }
 
 /* =========================================================
    CONTAGEM + LOTE
@@ -1001,7 +961,6 @@ strong, b { font-weight: 700; color: var(--text); }
 @media (max-width: 720px) {
   body { font-size: 16px; }
   .section { padding: 76px 0; }
-  .section--tight { padding: 48px 0; }
   .container { width: calc(100% - 32px); }
 
   .header__inner { width: calc(100% - 24px); }
@@ -1020,21 +979,6 @@ strong, b { font-weight: 700; color: var(--text); }
   .ficha { grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 40px; }
   .scroller { display: none; }
 
-  /* em tela estreita o brasão sai do absoluto e vira o topo da pilha — atrás
-     do texto ele só sumia, e ele é o elemento gráfico do bloco */
-  .corridao {
-    flex-direction: column; text-align: center; padding: 34px 24px 32px; min-height: 0;
-    background:
-      radial-gradient(300px 260px at 50% 12%, rgba(175,146,86,.16), transparent 70%),
-      linear-gradient(180deg, var(--bg-3), var(--bg-2));
-  }
-  .corridao__copy { max-width: none; }
-  .corridao__mark {
-    position: static; transform: none; margin: 0 auto 14px;
-    width: 186px; height: 186px; opacity: 1;
-    mask-image: none; -webkit-mask-image: none;
-    filter: drop-shadow(0 14px 26px rgba(0,0,0,.7)) drop-shadow(0 0 26px rgba(175,146,86,.28));
-  }
   .cdown { gap: 2px; padding: 24px 12px; }
   .cdown__sep { display: none; }
 
