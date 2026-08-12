@@ -1052,12 +1052,17 @@ strong, b { font-weight: 700; color: var(--text); }
 }
 
 .plano {
-  position: relative; display: flex; flex-direction: column;
+  /* overflow:hidden além do clip-path: o brasão do VIP sangra para fora do
+     card, e o clip-path corta a PINTURA mas não contém o overflow de layout —
+     mesma armadilha que fazia a página rolar de lado por causa das medalhas. */
+  position: relative; overflow: hidden; display: flex; flex-direction: column;
   background: linear-gradient(180deg, var(--bg-3), var(--bg-2));
   box-shadow: inset 0 0 0 1px var(--border);
   clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 22px 100%, 0 calc(100% - 22px));
   transition: transform var(--t), box-shadow var(--t);
 }
+/* o conteúdo sobe acima do brasão, que fica na camada 0 */
+.plano__head, .plano__lista, .plano__rodape { position: relative; z-index: 1; }
 .plano:hover { transform: translateY(-5px); box-shadow: inset 0 0 0 1px var(--border-active); }
 
 /* O VIP é o destaque: aro de ouro e um clarão saindo do topo do card. */
@@ -1068,6 +1073,27 @@ strong, b { font-weight: 700; color: var(--text); }
   box-shadow: inset 0 0 0 1px rgba(175,146,86,.45);
 }
 .plano--vip:hover { box-shadow: inset 0 0 0 1px var(--gold); }
+
+/* Brasão de boina sangrando pelo canto direito do card VIP.
+   A máscara horizontal apaga o lado esquerdo do emblema: a coluna de texto
+   fica limpa e só a borda direita do card recebe a textura. A opacidade é de
+   sussurro de propósito — é assinatura, não ilustração. */
+.plano__brasao {
+  position: absolute; z-index: 0; pointer-events: none;
+  /* centrado em 46%, e não em 50%: assim o emblema ocupa o vazio entre a lista
+     e o bloco de preço, sem passar por trás do valor. */
+  right: -58px; top: 46%; transform: translateY(-50%);
+  width: 280px; height: 280px;
+  background: url('public/intermediario.webp') center / contain no-repeat;
+  opacity: .15;
+  filter: drop-shadow(0 0 28px rgba(175,146,86,.5));
+  mask-image: linear-gradient(95deg, transparent 6%, #000 58%);
+  -webkit-mask-image: linear-gradient(95deg, transparent 6%, #000 58%);
+  transition: opacity var(--t), transform var(--t);
+}
+.plano--vip:hover .plano__brasao {
+  opacity: .22; transform: translateY(-50%) scale(1.04);
+}
 
 .plano__selo {
   position: absolute; top: 0; right: 0; z-index: 2;
@@ -1143,6 +1169,9 @@ strong, b { font-weight: 700; color: var(--text); }
 
 @media (max-width: 880px) {
   .planos { grid-template-columns: 1fr; max-width: 520px; }
+  /* card estreito: o brasão precisa recuar, senão a caveira compete com a
+     lista de benefícios em vez de assinar o canto */
+  .plano__brasao { width: 210px; height: 210px; right: -46px; opacity: .1; }
   /* No empilhamento o VIP vem primeiro: é a oferta que o cliente quer à frente,
      e no desktop ele já está à direita, que é o fim natural da leitura. */
   .plano--vip { order: -1; }
