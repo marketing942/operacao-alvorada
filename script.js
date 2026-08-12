@@ -30,13 +30,20 @@
     sheetEndpoint: "https://script.google.com/macros/s/AKfycbxdFplWVSfhTjvyIA7HIWb645xRjGNhBVhTdTf5UMjo0lSpW_A_jCuys0qB4uImKXPQ/exec?aba=OPERACAO",
     sheetTab: "OPERACAO",
 
-    /* 🔴 PENDENTE — segunda planilha (1AP1wrKkmAi2LPLtrCahlbbU36M67Z_-CYv-RYGkCthA).
-       NÃO é a URL da planilha: não existe como gravar direto numa URL do Google
-       Sheets. É preciso publicar um Apps Script COLADO NAQUELA planilha e usar
-       o /exec dele aqui — o passo a passo e o código estão em
-       scripts/google-apps-script.js.
+    /* Segundo destino: webhook do n8n que grava na planilha
+       "Operação Alvorada 11ª Edição — Leads"
+       (1q2XG4tjwSsZgtd2MUJiRcTG7Hg0ij2ZbEdpy3WsiEEo).
+
+       Não é a URL da planilha: não existe como gravar direto numa URL do Google
+       Sheets. Quem escreve é o fluxo n8n "Operação Alvorada — Leads para
+       Planilha", que recebe este POST e faz o append.
+
+       O corpo chega ao n8n como STRING, e não como objeto: o `no-cors` do
+       fetch só permite text/plain, então o webhook não faz o parse sozinho. As
+       expressões do fluxo já tratam os dois casos.
+
        Vazio faz o envio extra ser pulado, sem quebrar nada. */
-    sheetEndpointExtra: "",
+    sheetEndpointExtra: "https://webhook.cppem.com.br/webhook/alvorada-lead",
 
     pagina: "Operação Alvorada",
 
