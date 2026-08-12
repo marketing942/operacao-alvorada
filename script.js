@@ -29,6 +29,15 @@
 
     sheetEndpoint: "https://script.google.com/macros/s/AKfycbxdFplWVSfhTjvyIA7HIWb645xRjGNhBVhTdTf5UMjo0lSpW_A_jCuys0qB4uImKXPQ/exec?aba=OPERACAO",
     sheetTab: "OPERACAO",
+
+    /* 🔴 PENDENTE — segunda planilha (1AP1wrKkmAi2LPLtrCahlbbU36M67Z_-CYv-RYGkCthA).
+       NÃO é a URL da planilha: não existe como gravar direto numa URL do Google
+       Sheets. É preciso publicar um Apps Script COLADO NAQUELA planilha e usar
+       o /exec dele aqui — o passo a passo e o código estão em
+       scripts/google-apps-script.js.
+       Vazio faz o envio extra ser pulado, sem quebrar nada. */
+    sheetEndpointExtra: "",
+
     pagina: "Operação Alvorada",
 
     /* Dois produtos, dois checkouts. Cada botão de ingresso carrega o seu em
@@ -444,36 +453,46 @@
       localStorage.setItem(CONFIG.exitPopupPrefix + "_lead_converted", "1");
     } catch (e) {}
 
+    /* As CHAVES são as colunas da planilha e continuam em português de
+       propósito. Elas não têm relação com a nomenclatura da §6.0, que governa
+       os atributos do HTML — trocar uma pela outra quebra ou a planilha ou a
+       conversão.
+
+       `telefone` é o nome que o Apps Script lê (`dados.telefone`). Antes daqui
+       ia como `whatsapp`, que a planilha simplesmente ignorava.
+
+       Os VALORES vão exatamente como o visitante digitou: normalizar aqui
+       faria a planilha divergir do que a PixelX capturou no blur. */
     var payload = {
-      aba: CONFIG.sheetTab,        // janela/aba dentro da planilha
-      janela: CONFIG.sheetTab,
-      sheet: CONFIG.sheetTab,
-      tab: CONFIG.sheetTab,
+      aba: CONFIG.sheetTab,
       pagina: CONFIG.pagina,
       produto: selecionado.produto,
-      /* As CHAVES abaixo são as colunas da planilha e continuam em português
-         de propósito. Elas não têm relação com a nomenclatura da §6.0, que
-         governa os atributos do HTML — trocar uma pela outra quebra ou a
-         planilha ou a conversão.
-         Os VALORES vão exatamente como o visitante digitou: normalizar aqui
-         faria a planilha divergir do que a PixelX capturou no blur. */
       nome: nomeInput.value.trim(),
       email: emailInput.value.trim(),
-      whatsapp: telefoneInput.value.trim(),
+      telefone: telefoneInput.value.trim(),
       origem: window.location.href,
-      data: new Date().toLocaleString("pt-BR")
+      data_envio: new Date().toISOString()
     };
 
-    /* Planilha em fire-and-forget: com no-cors não dá para ler a resposta,
-       então esperar não garante nada — só atrasaria o visitante. */
-    var params = new URLSearchParams(payload).toString();
-    fetch(CONFIG.sheetEndpoint, {
-      method: "POST",
-      mode: "no-cors",
-      headers: { "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8" },
-      body: params
-    })["catch"](function (err) {
-      console.error("[Form] Falha ao salvar na planilha (segue o redirect):", err);
+    /* JSON com Content-Type text/plain, e NÃO urlencoded: o Apps Script faz
+       `JSON.parse(e.postData.contents)`, então um corpo urlencoded estourava no
+       parse e caía no catch dele — sem gravar linha nenhuma e sem erro visível
+       aqui, porque `no-cors` esconde a resposta. É o mesmo formato que a
+       landing do PMPE usa contra este mesmo endpoint. */
+    var corpo = JSON.stringify(payload);
+
+    /* Fire-and-forget nos dois destinos: com no-cors não dá para ler a
+       resposta, então esperar não garante nada — só atrasaria o visitante. */
+    [CONFIG.sheetEndpoint, CONFIG.sheetEndpointExtra].forEach(function (url) {
+      if (!url) return;
+      fetch(url, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: corpo
+      })["catch"](function (err) {
+        console.error("[Form] Falha ao salvar em " + url + " (segue o redirect):", err);
+      });
     });
 
     /* §7.6 — piso de 1500ms antes de navegar, alinhado ao debounce da PixelX.
