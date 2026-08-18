@@ -24,8 +24,12 @@
     // Prefixo do storage. NÃO deixar "cppem": as landings da CPPEM dividem
     // domínio, e o prefixo repetido faria uma travar o popup da outra.
     prefix:        "alvorada",
-    // Mesmo Apps Script do formulário de venda; o que separa é a aba.
-    endpoint:      "https://script.google.com/macros/s/AKfycbxdFplWVSfhTjvyIA7HIWb645xRjGNhBVhTdTf5UMjo0lSpW_A_jCuys0qB4uImKXPQ/exec?aba=OPERACAO_COMUNIDADE",
+    // Envio para a planilha central DESLIGADO junto com o do formulário de
+    // venda (ver o comentário no script.js). O fetch é guardado por
+    // `CONFIG.endpoint ? ...`, então endpoint vazio simplesmente não envia.
+    // Para religar, devolva a linha comentada abaixo.
+    // endpoint:      "https://script.google.com/macros/s/AKfycbxdFplWVSfhTjvyIA7HIWb645xRjGNhBVhTdTf5UMjo0lSpW_A_jCuys0qB4uImKXPQ/exec?aba=OPERACAO_COMUNIDADE",
+    endpoint:      "",
     redirect:      "https://chat.whatsapp.com/BxOuisctuqV3UWT9ldASe4",
     redirectDelay: 1500,      // ms antes de sair da página; abaixo de ~1s perde evento
     origem:        "exit_popup_alvorada",  // identifica a origem no seu banco

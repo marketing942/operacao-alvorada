@@ -27,7 +27,15 @@
        dados na URL. */
     formId: "IPEyzyfmJhKQEYIXAlZH",
 
-    sheetEndpoint: "https://script.google.com/macros/s/AKfycbxdFplWVSfhTjvyIA7HIWb645xRjGNhBVhTdTf5UMjo0lSpW_A_jCuys0qB4uImKXPQ/exec?aba=OPERACAO",
+    /* Envio para a planilha central DESLIGADO. Aquela planilha virou aba única
+       (CPPEM) e recebe só os projetos de captura; a Operação Alvorada é venda
+       direta e já tem planilha própria, alimentada pelo webhook do n8n logo
+       abaixo — nenhum lead se perde com isto desligado.
+
+       O loop de envio pula endpoint vazio (`if (!url) return;`), então basta
+       devolver a linha comentada para religar. */
+    // sheetEndpoint: "https://script.google.com/macros/s/AKfycbxdFplWVSfhTjvyIA7HIWb645xRjGNhBVhTdTf5UMjo0lSpW_A_jCuys0qB4uImKXPQ/exec?aba=OPERACAO",
+    sheetEndpoint: "",
     sheetTab: "OPERACAO",
 
     /* Segundo destino: webhook do n8n que grava na planilha
