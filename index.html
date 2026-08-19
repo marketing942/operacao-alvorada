@@ -152,25 +152,34 @@
 
   <div class="container hero__inner">
 
-    <span class="tag anim d1"><i class="dot"></i> 11ª edição · 26 e 27 de setembro · Sede CPPEM</span>
+    <div class="hero__texto">
+      <span class="tag anim d1"><i class="dot"></i> 11ª edição · 26 e 27 de setembro · Sede CPPEM</span>
 
-    <p class="hero__edition anim d2">Operação Alvorada · A Ascensão</p>
+      <h1 class="hero__title anim d2">
+        Enquanto a cidade dorme,<br>
+        você conquista a <span class="gold">farda</span>.
+      </h1>
 
-    <h1 class="hero__title anim d2">
-      Enquanto a cidade dorme,<br>
-      você conquista a <span class="gold">farda</span>.
-    </h1>
+      <p class="hero__sub anim d3">
+        Uma <strong>madrugada inteira de estudos</strong>, presencial, das <strong>19h às 07h</strong>,
+        com foco total em <strong>PMPE e PCPE</strong>. Quem chega ao amanhecer não sai o mesmo.
+      </p>
 
-    <p class="hero__sub anim d3">
-      Uma <strong>madrugada inteira de estudos</strong>, presencial, das <strong>19h às 07h</strong>,
-      com foco total em <strong>PMPE e PCPE</strong>. Quem chega ao amanhecer não sai o mesmo.
-    </p>
+      <div class="hero__cta anim d4">
+        <a class="btn btn--gold btn--lg shine" href="#ingressos">
+          <span>Quero minha vaga na Alvorada</span>
+        </a>
+        <a class="btn btn--ghost btn--lg" href="#incluso"><span>Ver o que está incluso</span></a>
+      </div>
+    </div>
 
-    <div class="hero__cta anim d4">
-      <a class="btn btn--gold btn--lg shine" href="#ingressos">
-        <span>Quero minha vaga na Alvorada</span>
-      </a>
-      <a class="btn btn--ghost btn--lg" href="#incluso"><span>Ver o que está incluso</span></a>
+    <!-- O brasão ocupa a coluna da direita, onde antes só havia a foto. Ele
+         também dispensa a linha de texto "Operação Alvorada · A Ascensão", que
+         está escrita dentro dele. -->
+    <div class="hero__brasao anim d3">
+      <img src="public/brasao-alvorada.webp"
+           alt="Operação Alvorada — A Ascensão, 11ª edição"
+           width="700" height="804" fetchpriority="high">
     </div>
 
     <!-- Ficha da operação: as informações que decidem a inscrição já na entrada. -->
@@ -288,11 +297,12 @@
         <header class="plano__head">
           <span class="plano__tag">Vagas limitadas</span>
           <h3 class="plano__nome">Ingresso VIP</h3>
-          <p class="plano__desc">Tudo do padrão, mais o que só 50 pessoas vão levar.</p>
+          <p class="plano__desc">Tudo do padrão, mais os bônus do VIP. São só 50 ingressos.</p>
         </header>
 
         <ul class="plano__lista">
           <li class="plano__tudo">Tudo do Ingresso Padrão;</li>
+          <li>Camisa oficial da 11ª edição;</li>
           <li>Apostila digital;</li>
           <li>Momento exclusivo com o Prof. Everton Mota e os convidados especiais;</li>
         </ul>
@@ -316,6 +326,37 @@
         </div>
       </article>
 
+    </div>
+
+    <!-- A camisa é benefício só do VIP, então mora dentro da própria seção de
+         ingressos, logo abaixo dos cards: quem acabou de ver os R$ 167 vê o
+         que justifica a diferença. Ficar aqui também evita criar uma seção
+         nova, que quebraria a alternância de fundos da página. -->
+    <div class="camisa">
+      <figure class="camisa__foto">
+        <img src="public/blusaspremium.webp"
+             alt="Camisa oficial da Operação Alvorada 11ª edição, frente e costas"
+             width="1200" height="900" loading="lazy">
+      </figure>
+
+      <div class="camisa__copy">
+        <span class="camisa__selo">Brinde do Ingresso VIP</span>
+        <h3>A camisa oficial da <span class="gold">11ª edição</span></h3>
+        <p>
+          Preta com detalhes em ouro, brasão da operação nas costas e o leão do
+          CPPEM no peito. Quem fecha o Ingresso VIP leva a camisa junto, sem
+          pagar nada a mais por ela.
+        </p>
+        <ul class="camisa__itens">
+          <li>Frente com o nome da operação e a edição</li>
+          <li>Costas com o brasão completo</li>
+          <li>Inclusa no Ingresso VIP, sem custo extra</li>
+        </ul>
+        <a class="btn btn--gold shine" href="#ingressos"><span>Quero o VIP com a camisa</span></a>
+        <p class="camisa__nota">
+          Não vai de VIP? A camisa também é vendida à parte, fora do valor da entrada.
+        </p>
+      </div>
     </div>
   </div>
 </section>
@@ -641,6 +682,10 @@
 <!-- ================= CTA FINAL ================= -->
 <section class="final">
   <div class="container final__inner">
+    <!-- O brasão fecha a página como abriu: a marca é a primeira e a última
+         coisa que a pessoa vê. -->
+    <img class="final__brasao" src="public/brasao-alvorada.webp"
+         alt="Operação Alvorada — A Ascensão" width="700" height="804" loading="lazy">
     <h2>Daqui a um ano você vai lembrar<br>da noite em que <span class="gold">decidiu</span>.</h2>
     <p>26 e 27 de setembro · 19h às 07h · Sede CPPEM · 110 cadeiras.</p>
     <a class="btn btn--gold btn--lg shine" href="#ingressos"><span>Garantir minha vaga agora</span></a>

@@ -39,6 +39,12 @@ TRABALHOS = [
     ("20170508-IMG_5770.jpg", 800),
     ("20170508-IMG_5972.jpg", 2200),   # faixa larga, ocupa as 4 colunas
     ("everton-mentor.jpg", 1000),
+    # Camisa do VIP: ocupa até 560 css px na faixa dentro de #ingressos, e em
+    # tela 2x isso pede 1120 — 1200 dá folga.
+    ("blusaspremium.jpeg", 1200),
+    # Brasão da Operação já recortado por scripts/brasao-alpha.py. Aparece na
+    # hero com até 210 css px, e em telas 3x isso pede 630 — 700 dá folga.
+    ("brasao-alvorada.png", 700),
     # PNGs com alfa: o WebP preserva a transparência e corta ~85% do peso
     ("intermediario.png", 700),
     ("emblema-leao.png", 700),

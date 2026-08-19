@@ -94,17 +94,30 @@ strong, b { font-weight: 700; color: var(--text); }
 
 .section--alt { background: linear-gradient(180deg, var(--bg), #0d0d11 45%, var(--bg)); }
 
-/* ─── MARCA D'ÁGUA ─────────────────────────────────────────
-   O brasão do leão entra pela esquerda, em opacidade de sussurro, só nas
-   seções alternadas — é o que dá profundidade ao preto chapado sem virar
-   papel de parede. A máscara vertical apaga a marca perto das emendas para
-   uma seção não "costurar" na outra. */
+/* ─── MARCAS D'ÁGUA ────────────────────────────────────────
+   Duas marcas em opacidade de sussurro, alternando de lado a cada seção: o
+   leão do CPPEM entra pela esquerda nas seções alternadas, o brasão da
+   Operação entra pela direita nas seções planas. É o que dá profundidade ao
+   preto chapado sem virar papel de parede — e é o que faz a marca do evento
+   acompanhar a página inteira, não só a hero.
+
+   A máscara vertical apaga a marca perto das emendas para uma seção não
+   "costurar" na outra. */
+.section::before,
 .section--alt::before {
   content: ''; position: absolute; inset: 0; z-index: 0; pointer-events: none;
-  background: url('public/emblema-leao.webp') -230px 50% / auto 620px no-repeat;
-  opacity: .045;
   mask-image: linear-gradient(180deg, transparent, #000 18%, #000 82%, transparent);
   -webkit-mask-image: linear-gradient(180deg, transparent, #000 18%, #000 82%, transparent);
+}
+/* seção plana → brasão da Operação, pela direita */
+.section::before {
+  background: url('public/brasao-alvorada.webp') calc(100% + 170px) 50% / auto 600px no-repeat;
+  opacity: .05;
+}
+/* seção alternada → leão do CPPEM, pela esquerda */
+.section--alt::before {
+  background: url('public/emblema-leao.webp') -230px 50% / auto 620px no-repeat;
+  opacity: .045;
 }
 /* fios de ouro nas duas emendas, num único pseudo */
 .section--alt::after {
@@ -372,10 +385,32 @@ strong, b { font-weight: 700; color: var(--text); }
 }
 .tag .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--gold); animation: pulse 2.2s infinite; }
 
-.hero__edition {
-  font-family: var(--font-title); font-size: 13px; font-weight: 700;
-  letter-spacing: 6px; text-transform: uppercase; color: var(--text-mute);
-  margin-bottom: 14px;
+/* ─── BRASÃO DA OPERAÇÃO NA HERO ───────────────────────────
+   Duas colunas: texto à esquerda, brasão à direita — que era o lado ocupado só
+   pela foto. A ficha atravessa as duas embaixo.
+
+   O arquivo vem de scripts/brasao-alpha.py, com o fundo preto já recortado. A
+   primeira tentativa foi `mix-blend-mode: lighten` sobre o JPEG original, que
+   NÃO funcionou: o preto do arquivo é um fio mais claro que o da página, então
+   o quadrado aparecia. Com alfa de verdade o blend deixa de existir. */
+.hero__inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas: "texto brasao" "ficha ficha";
+  align-items: center; column-gap: clamp(20px, 4vw, 56px);
+}
+.hero__texto  { grid-area: texto; min-width: 0; }
+.hero__brasao { grid-area: brasao; position: relative; width: clamp(190px, 25vw, 360px); }
+.hero .ficha  { grid-area: ficha; }
+
+.hero__brasao img {
+  width: 100%; height: auto;
+  filter: drop-shadow(0 18px 44px rgba(0,0,0,.8)) drop-shadow(0 0 34px rgba(175,146,86,.26));
+}
+/* halo de amanhecer atrás do brasão, para ele não flutuar solto sobre a foto */
+.hero__brasao::before {
+  content: ''; position: absolute; inset: -18%; z-index: -1; border-radius: 50%;
+  background: radial-gradient(circle, rgba(175,146,86,.26), transparent 68%);
 }
 .hero__title {
   font-family: var(--font-title);
@@ -793,6 +828,10 @@ strong, b { font-weight: 700; color: var(--text); }
     linear-gradient(180deg, var(--bg) 0%, rgba(10,10,11,.72) 40%, var(--bg) 100%);
 }
 .final__inner { position: relative; z-index: 3; }
+.final__brasao {
+  width: clamp(120px, 15vw, 176px); margin: 0 auto 26px;
+  filter: drop-shadow(0 14px 34px rgba(0,0,0,.75)) drop-shadow(0 0 30px rgba(175,146,86,.28));
+}
 .final h2 {
   font-family: var(--font-title); font-size: clamp(28px, 4.6vw, 54px); font-weight: 800;
   line-height: 1.06; letter-spacing: .5px; text-transform: uppercase;
@@ -971,6 +1010,12 @@ strong, b { font-weight: 700; color: var(--text); }
   .hero { padding-top: calc(var(--nav-h) + 34px); min-height: auto; padding-bottom: 60px; }
   .hero__bg i { transform: none; opacity: .3; background-position: 62% center; }
   .hero__veil { background: linear-gradient(180deg, rgba(10,10,11,.9) 0%, rgba(10,10,11,.66) 40%, var(--bg) 92%); }
+  .hero__inner {
+    grid-template-columns: 1fr;
+    grid-template-areas: "brasao" "texto" "ficha";
+    justify-items: start; row-gap: 4px;
+  }
+  .hero__brasao { width: clamp(150px, 46vw, 210px); margin-bottom: 18px; }
   .hero__title { max-width: none; }
   .hero__cta .btn { width: 100%; }
   /* a etiqueta é longa: em tela estreita ela quebra em vez de vazar da caixa */
@@ -1200,4 +1245,78 @@ strong, b { font-weight: 700; color: var(--text); }
    rótulo em duas linhas quando a caixa fica estreita. */
 @media (max-width: 360px) {
   .xp__cta { letter-spacing: 1.2px; font-size: .92rem; }
+}
+
+/* =========================================================
+   CAMISA DO VIP — faixa dentro de #ingressos
+   ========================================================= */
+.camisa {
+  display: grid; grid-template-columns: 1.15fr .85fr; align-items: center;
+  gap: clamp(24px, 4vw, 52px);
+  max-width: 940px; margin: 46px auto 0; padding: 30px 34px;
+  background:
+    radial-gradient(520px 300px at 22% 50%, rgba(175,146,86,.13), transparent 70%),
+    linear-gradient(180deg, var(--bg-3), var(--bg-2));
+  box-shadow: inset 0 0 0 1px rgba(175,146,86,.34);
+  clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 22px 100%, 0 calc(100% - 22px));
+}
+
+/* A foto tem fundo escuro próprio, um tom acima do card. Tentei dissolver a
+   borda com máscara radial e o retângulo continuava aparecendo — o fundo dela
+   é uniforme demais para sumir num degradê. Então ele vira moldura de verdade,
+   com o mesmo chanfro e fio de ouro dos outros blocos: proposital em vez de
+   acidental. */
+.camisa__foto {
+  margin: 0; position: relative; overflow: hidden;
+  box-shadow: inset 0 0 0 1px var(--border);
+  clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+}
+.camisa__foto img { width: 100%; height: auto; display: block; }
+/* leve vinheta para a foto encostar no card sem emenda dura */
+.camisa__foto::after {
+  content: ''; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(ellipse 88% 88% at 50% 50%, transparent 52%, rgba(10,10,11,.55) 100%);
+}
+
+.camisa__selo {
+  display: inline-block; margin-bottom: 14px; padding: 6px 13px;
+  background: rgba(175,146,86,.12); box-shadow: inset 0 0 0 1px var(--border-active);
+  font-size: 10px; font-weight: 700; letter-spacing: 2.8px;
+  text-transform: uppercase; color: var(--gold);
+  clip-path: polygon(0 0, calc(100% - 9px) 0, 100% 9px, 100% 100%, 9px 100%, 0 calc(100% - 9px));
+}
+.camisa__copy h3 {
+  font-family: var(--font-title); font-size: clamp(21px, 2.6vw, 29px); font-weight: 800;
+  line-height: 1.08; letter-spacing: .6px; text-transform: uppercase; color: var(--text);
+  margin-bottom: 12px;
+}
+.camisa__copy p { font-size: 15.5px; line-height: 1.6; color: var(--text-dim); }
+
+.camisa__itens { list-style: none; display: grid; gap: 9px; margin: 16px 0 22px; }
+.camisa__itens li {
+  position: relative; padding-left: 24px;
+  font-size: 14.5px; line-height: 1.5; color: var(--text-dim);
+}
+.camisa__itens li::before {
+  content: ''; position: absolute; left: 0; top: .55em;
+  width: 9px; height: 9px; background: var(--gold);
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+}
+
+/* A camisa NÃO é exclusiva do VIP: ela vem de brinde nele, mas também é
+   vendida à parte. Esta nota existe para o bloco não prometer exclusividade —
+   a versão anterior dizia "só 50 pessoas vão vestir", o que era falso. */
+.camisa__nota {
+  margin-top: 14px; padding-top: 13px;
+  border-top: 1px solid var(--border);
+  font-size: 13.5px; line-height: 1.55; color: var(--text-mute);
+}
+
+@media (max-width: 880px) {
+  /* a foto vem primeiro: é ela que vende o item */
+  .camisa { grid-template-columns: 1fr; max-width: 520px; padding: 24px 22px 28px; text-align: center; }
+  .camisa__itens { justify-items: center; }
+  .camisa__itens li { padding-left: 0; padding-top: 16px; }
+  .camisa__itens li::before { left: 50%; top: 2px; transform: translateX(-50%); }
+  .camisa__copy .btn { width: 100%; }
 }
