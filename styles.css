@@ -1184,6 +1184,7 @@ strong, b { font-weight: 700; color: var(--text); }
 }
 /* "Tudo do Ingresso Padrão" é herança, não item — merece peso próprio */
 .plano__lista .plano__tudo { color: var(--gold-light); font-weight: 700; }
+.plano__lista .plano__dogtag { color: var(--gold-light); font-weight: 800; }
 
 .plano__rodape { padding: 0 32px 32px; }
 .plano__preco {
