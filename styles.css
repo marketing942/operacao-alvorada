@@ -615,6 +615,7 @@ strong, b { font-weight: 700; color: var(--text); }
   mix-blend-mode: multiply;                /* duotone dourado: o fundo claro vira ouro */
   transition: transform .6s var(--ease);
 }
+.lineup__img--natural { filter: none; mix-blend-mode: normal; }   /* foto já tratada em dourado */
 .lineup__card:hover .lineup__img { transform: scale(1.04); }
 .lineup__frame::after {
   content: ''; position: absolute; inset: 0; pointer-events: none;
