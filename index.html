@@ -100,7 +100,7 @@
      tema que não cabem numa variável do kit vencem por ordem de cascata, sem
      precisar de !important nem de editar o kit. -->
 <link rel="stylesheet" href="exit-popup-kit/exit-popup.css?v=1">
-<link rel="stylesheet" href="styles.css?v=2">
+<link rel="stylesheet" href="styles.css?v=3">
 </head>
 <body>
 
@@ -257,10 +257,24 @@
       </p>
     </div>
 
+    <!-- Alerta de último lote. Os números vêm do script.js (bloco do lote):
+         dias pelo countdown, ingressos pela constante RESTAM_FIXO. -->
+    <button class="urgencia js-open" type="button"
+            data-produto="Ingresso Padrão — 3º lote"
+            data-checkout="https://checkout.cppem.com.br/pay/operacao-alvorada-11-terceiro-lote">
+      <span class="urgencia__tag"><i class="urgencia__dot" aria-hidden="true"></i> Última chance</span>
+      <span class="urgencia__txt">
+        <b>3º e último lote</b> — restam só <strong class="urgencia__num" id="urgLeft">5</strong> de 20 ingressos
+        · faltam <strong id="urgDays">4</strong> dias
+      </span>
+      <span class="urgencia__cta">Garantir agora →</span>
+    </button>
+
     <div class="planos">
 
       <!-- ---------- PADRÃO ---------- -->
-      <article class="plano">
+      <article class="plano plano--ultimo">
+        <span class="plano__alerta"><i class="urgencia__dot" aria-hidden="true"></i> Último lote</span>
         <header class="plano__head">
           <span class="plano__tag">3º lote</span>
           <h3 class="plano__nome">Ingresso Padrão</h3>
@@ -280,7 +294,7 @@
           <div class="plano__preco">
             <span class="plano__preco-label">Ingresso no 3º lote</span>
             <b><i>R$</i>85,00</b>
-            <span class="plano__preco-nota" id="precoNotaPadrao">20 ingressos neste lote</span>
+            <span class="plano__preco-nota plano__preco-nota--pisca" id="precoNotaPadrao">restam 5 de 20 neste lote</span>
           </div>
           <button class="btn btn--ghost btn--lg btn--block js-open" type="button"
                   data-produto="Ingresso Padrão — 3º lote"
@@ -387,7 +401,7 @@
 
     <div class="lote">
       <div class="lote__head">
-        <span class="lote__title">3º lote — 20 ingressos</span>
+        <span class="lote__title">3º e último lote — 20 ingressos</span>
         <span class="lote__left" id="loteLeft">carregando…</span>
       </div>
       <div class="lote__bar" role="progressbar" aria-label="Ingressos do 3º lote já ocupados"
@@ -395,9 +409,9 @@
         <i id="loteFill"></i>
       </div>
       <p class="lote__note">
-        São 20 ingressos neste lote, de um total de 110 no evento. Quando ele fechar,
-        o valor sobe — e não volta atrás. Nas edições anteriores as últimas cadeiras
-        foram embora antes da semana do evento.
+        Este é o último lote: são 20 ingressos, de um total de 110 no evento. Quando
+        ele fechar, as vendas do padrão encerram — não existe 4º lote. Nas edições
+        anteriores as últimas cadeiras foram embora antes da semana do evento.
       </p>
     </div>
 
@@ -495,21 +509,25 @@
     </div>
 
     <div class="lineup">
-      <article class="lineup__card">
+      <!-- O mentor ocupa a linha inteira em formato banner; os dois convidados
+           dividem a linha de baixo e, somados, fecham a mesma largura. -->
+      <article class="lineup__card lineup__card--destaque">
         <div class="lineup__frame">
-          <img src="public/everton-mentor.webp" alt="Prof. Everton Mota, mentor do CPPEM"
-               class="lineup__img lineup__img--natural" width="1000" height="1250" loading="lazy">
+          <img src="public/everton-banner.png" alt="Prof. Everton Mota, mentor do CPPEM"
+               class="lineup__img lineup__img--natural" width="1672" height="941" loading="lazy">
           <i class="brk-corner" aria-hidden="true"></i>
         </div>
-        <div class="lineup__plate">
-          <strong>Prof. Everton Mota</strong>
-          <span>Mentor · CPPEM Concursos</span>
+        <div class="lineup__texto">
+          <div class="lineup__plate">
+            <strong>Prof. Everton Mota</strong>
+            <span>Mentor · CPPEM Concursos</span>
+          </div>
+          <p class="lineup__bio">
+            Aprovado em <strong>15 concursos públicos</strong>, não ensina pelo livro: ensina pela
+            estrada que ele mesmo caminhou. Há mais de 7 anos forma candidatos para carreiras
+            policiais no Nordeste, com mais de 14 mil aprovados.
+          </p>
         </div>
-        <p class="lineup__bio">
-          Aprovado em <strong>15 concursos públicos</strong>, não ensina pelo livro: ensina pela
-          estrada que ele mesmo caminhou. Há mais de 7 anos forma candidatos para carreiras
-          policiais no Nordeste, com mais de 14 mil aprovados.
-        </p>
       </article>
 
       <article class="lineup__card">
@@ -678,8 +696,8 @@
         <p>É o que a sede comporta mantendo todo mundo perto do professor. Passou disso, vira plateia — e plateia não é o que a gente quer formar.</p>
       </details>
       <details class="faq__item">
-        <summary>O que acontece quando o 1º lote fecha?</summary>
-        <p>O valor sobe para o lote seguinte e não retorna. Cada lote é liberado só quando o anterior esgota, então o preço que você vê hoje é o menor que vai existir.</p>
+        <summary>O que acontece quando o 3º lote fecha?</summary>
+        <p>Ele é o último. Quando as 20 cadeiras dele acabarem, as vendas do ingresso padrão encerram e não abre outro lote.</p>
       </details>
     </div>
   </div>
@@ -695,7 +713,7 @@
     <h2>Daqui a um ano você vai lembrar<br>da noite em que <span class="gold">decidiu</span>.</h2>
     <p>26 e 27 de setembro · 19h às 07h · Sede CPPEM · 110 cadeiras.</p>
     <a class="btn btn--gold btn--lg shine" href="#ingressos"><span>Garantir minha vaga agora</span></a>
-    <span class="final__note">1º lote enquanto durar — depois o valor sobe.</span>
+    <span class="final__note">Último lote aberto — quando fechar, não tem outro.</span>
   </div>
 </section>
 
@@ -759,8 +777,8 @@
 <!-- ================= BARRA FIXA (mobile) ================= -->
 <div class="dock" id="dock">
   <div class="dock__info">
-    <b>1º lote aberto</b>
-    <span id="dockLeft">20 ingressos</span>
+    <b><i class="urgencia__dot" aria-hidden="true"></i> Último lote</b>
+    <span id="dockLeft">restam 5 ingressos</span>
   </div>
   <a class="btn btn--gold shine" href="#ingressos"><span>Garantir vaga</span></a>
 </div>
@@ -779,7 +797,7 @@
     </p>
 
     <p class="modal__produto">
-      Ingresso escolhido: <b id="modalProduto">Ingresso Padrão — 1º lote</b>
+      Ingresso escolhido: <b id="modalProduto">Ingresso Padrão — 3º lote</b>
     </p>
 
     <!-- NOMENCLATURA CANÔNICA (TRACKING.md §6.0) — não traduzir os nomes.
@@ -832,7 +850,7 @@
     <!-- Uma linha por benefício: em 320px cada quebra extra empurra o botão
          para fora da dobra do popup, que já roda no teto do max-height. -->
     <ul class="xp__benefits">
-      <li>Aviso antes de o 1º lote fechar e o valor subir.</li>
+      <li>Aviso antes de o último lote fechar.</li>
       <li>Os convidados da 11ª edição em primeira mão.</li>
       <li>Conteúdo diário de PMPE e PCPE.</li>
     </ul>
@@ -866,7 +884,7 @@
   </div>
 </div>
 
-<script src="script.js?v=2"></script>
+<script src="script.js?v=3"></script>
 <script src="exit-popup-kit/exit-popup.js?v=1"></script>
 
   <!-- Google Tag Manager (noscript) -->

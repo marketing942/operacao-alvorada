@@ -59,7 +59,7 @@
        data-checkout/data-produto (index.html) — estes aqui são só o destino de
        segurança para um CTA que esqueça os atributos, para nunca sobrar um
        botão que leve a lugar nenhum. */
-    produtoPadrao: "Ingresso Padrão — 1º lote",
+    produtoPadrao: "Ingresso Padrão — 3º lote",
     checkoutPadrao: "https://checkout.cppem.com.br/pay/op-alvorada-11-ingresso",
 
     redirectDelay: 1500,     // §7.6 — abaixo de ~1s começa a perder eventos
@@ -154,6 +154,7 @@
     var cdM = document.getElementById("cdM");
     var cdS = document.getElementById("cdS");
     var navDays = document.getElementById("navDays");   // leitura curta na navbar
+    var urgDays = document.getElementById("urgDays");   // faixa de "última chance"
 
     var tickCountdown = function () {
       var falta = alvo - Date.now();
@@ -173,6 +174,7 @@
       cdM.textContent = pad(Math.floor(seg / 60) % 60);
       cdS.textContent = pad(seg % 60);
       if (navDays) navDays.textContent = String(dias);
+      if (urgDays) urgDays.textContent = String(dias);
     };
 
     var cdTimer = setInterval(tickCountdown, 1000);
@@ -204,15 +206,22 @@
     var dockLeft = document.getElementById("dockLeft");
     var precoNota = document.getElementById("precoNotaPadrao");
 
+    /* 3º e último lote: o número de restantes é fixo por decisão comercial e
+       vence a projeção acima. Para voltar à projeção, deixe como null. */
+    var RESTAM_FIXO = 5;
+    var urgLeft = document.getElementById("urgLeft");
+
     if (loteFill && loteLeft) {
       var span = alvo - DATA_ANCORA;
       var andado = Math.min(Math.max((Date.now() - DATA_ANCORA) / span, 0), 1);
       var ocupadas = Math.round(OCUPADAS_ANCORA + (OCUPADAS_TETO - OCUPADAS_ANCORA) * andado);
+      if (RESTAM_FIXO !== null) ocupadas = LOTE_INGRESSOS - RESTAM_FIXO;
       var restam = Math.max(LOTE_INGRESSOS - ocupadas, 1);
       var pct = Math.round((ocupadas / LOTE_INGRESSOS) * 100);
 
-      loteLeft.textContent = "restam " + restam + " de " + LOTE_INGRESSOS + " ingressos";
-      if (dockLeft) dockLeft.textContent = "restam " + restam + " ingressos";
+      if (urgLeft) urgLeft.textContent = String(restam);
+      loteLeft.textContent = "restam só " + restam + " de " + LOTE_INGRESSOS + " ingressos";
+      if (dockLeft) dockLeft.textContent = "restam só " + restam + " ingressos";
       if (precoNota) precoNota.textContent = "restam " + restam + " de " + LOTE_INGRESSOS + " neste lote";
       if (loteBar) loteBar.setAttribute("aria-valuenow", String(pct));
 

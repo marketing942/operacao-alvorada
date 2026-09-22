@@ -596,7 +596,11 @@ strong, b { font-weight: 700; color: var(--text); }
 /* =========================================================
    CONVIDADOS
    ========================================================= */
-.lineup { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+/* Mentor em cima ocupando as duas colunas (foto em banner 16:9) e os dois
+   convidados embaixo — juntos eles fecham exatamente a largura do banner. */
+/* largura menor que a do container: em tela cheia o banner 16:9 do mentor
+   tomava a dobra inteira e empurrava os dois convidados para fora da tela. */
+.lineup { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; max-width: 880px; margin-inline: auto; }
 .lineup__card {
   background: linear-gradient(180deg, var(--bg-3), var(--bg-2));
   box-shadow: inset 0 0 0 1px var(--border);
@@ -646,6 +650,26 @@ strong, b { font-weight: 700; color: var(--text); }
 .lineup__card--soon .lineup__plate strong { color: var(--text-mute); }
 .lineup__card--soon .lineup__plate span { color: var(--text-mute); }
 .lineup__bio { padding: 14px 24px 26px; font-size: 15.5px; color: var(--text-dim); line-height: 1.65; }
+
+/* ---- card em destaque: o mentor ---- */
+.lineup__card--destaque { grid-column: 1 / -1; box-shadow: inset 0 0 0 1px rgba(175,146,86,.45); }
+.lineup__card--destaque:hover { box-shadow: inset 0 0 0 1px var(--gold); }
+.lineup__card--destaque .lineup__frame { aspect-ratio: 16 / 9; }
+.lineup__card--destaque .lineup__img { object-position: center; }
+/* nome à esquerda, bio à direita: sem isto o banner largo deixaria uma faixa
+   de texto solta embaixo, com linhas longas demais para ler. */
+.lineup__texto {
+  display: grid; grid-template-columns: minmax(200px, .8fr) 2fr;
+  gap: 4px 28px; align-items: start; padding-bottom: 8px;
+}
+.lineup__texto .lineup__plate { padding-right: 0; }
+.lineup__texto .lineup__bio { padding-left: 0; padding-top: 22px; }
+
+@media (max-width: 720px) {
+  .lineup__texto { grid-template-columns: 1fr; gap: 0; }
+  .lineup__texto .lineup__bio { padding: 14px 24px 26px; }
+  .lineup__card--destaque .lineup__frame { aspect-ratio: 4 / 3; }
+}
 
 /* ─── MEDALHAS (números da tropa) ──────────────────────────
    Cada marca é uma condecoração: disco hexagonal com aro de ouro, três
@@ -1212,6 +1236,77 @@ strong, b { font-weight: 700; color: var(--text); }
   display: block; margin-top: 10px;
   font-size: 12px; font-weight: 700; letter-spacing: 1.4px;
   text-transform: uppercase; color: var(--danger);
+}
+
+/* =========================================================
+   ÚLTIMO LOTE — gatilho de "última chance"
+   Vermelho próprio, mais aceso que o --danger, porque aqui o alerta
+   precisa brilhar no fundo escuro e não só marcar erro de formulário.
+   ========================================================= */
+:root { --alerta: #FF3B30; --alerta-rgb: 255,59,48; }
+
+.urgencia {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px 18px;
+  width: 100%; max-width: 940px; margin: 0 auto 26px; padding: 16px 22px;
+  font: inherit; color: var(--text); text-align: center; cursor: pointer;
+  background: linear-gradient(90deg, rgba(var(--alerta-rgb),.16), rgba(var(--alerta-rgb),.07) 50%, rgba(var(--alerta-rgb),.16));
+  border: 1px solid rgba(var(--alerta-rgb),.7);
+  animation: alerta-aro 1.4s ease-in-out infinite;
+  transition: transform var(--t);
+}
+.urgencia:hover { transform: translateY(-2px); }
+.urgencia:focus-visible { outline: 2px solid var(--alerta); outline-offset: 3px; }
+
+.urgencia__tag, .plano__alerta {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 12px; background: var(--alerta); color: #fff;
+  font-family: var(--font-title); font-size: 11px; font-weight: 800;
+  letter-spacing: 2.4px; text-transform: uppercase;
+  animation: alerta-pisca 1s steps(2, jump-none) infinite;
+}
+.urgencia__txt { font-size: 16px; font-weight: 600; letter-spacing: .4px; color: var(--text-dim); }
+.urgencia__txt b { color: var(--text); font-weight: 700; text-transform: uppercase; letter-spacing: 1.2px; }
+.urgencia__txt strong { color: var(--alerta); font-size: 1.25em; font-weight: 800; }
+.urgencia__cta {
+  font-family: var(--font-title); font-size: 13px; font-weight: 800;
+  letter-spacing: 2px; text-transform: uppercase; color: var(--gold-light);
+}
+
+/* bolinha que pisca: usada na faixa, no card e na barra fixa do mobile */
+.urgencia__dot {
+  display: inline-block; width: 8px; height: 8px; border-radius: 50%; flex: none;
+  background: #fff; box-shadow: 0 0 0 0 rgba(255,255,255,.8);
+  animation: alerta-ping 1.2s ease-out infinite;
+}
+.dock__info b .urgencia__dot { background: var(--alerta); margin-right: 6px; vertical-align: 1px; }
+
+/* card do padrão: aro vermelho pulsando. O .plano tem clip-path, que corta
+   sombra externa — por isso o brilho é todo inset. */
+.plano--ultimo { animation: alerta-aro-inset 1.4s ease-in-out infinite; }
+.plano__alerta {
+  position: absolute; top: 0; right: 0; z-index: 2;
+  padding: 7px 16px 7px 20px; font-size: 10px;
+  clip-path: polygon(14px 0, 100% 0, 100% 100%, 0 100%);
+}
+.plano__preco-nota--pisca { color: var(--alerta); animation: alerta-pisca 1s steps(2, jump-none) infinite; }
+
+@keyframes alerta-aro {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(var(--alerta-rgb),0), 0 0 14px rgba(var(--alerta-rgb),.25); }
+  50%      { box-shadow: 0 0 0 4px rgba(var(--alerta-rgb),.18), 0 0 34px rgba(var(--alerta-rgb),.6); }
+}
+@keyframes alerta-aro-inset {
+  0%, 100% { box-shadow: inset 0 0 0 1px rgba(var(--alerta-rgb),.45), inset 0 0 18px rgba(var(--alerta-rgb),.08); }
+  50%      { box-shadow: inset 0 0 0 2px rgba(var(--alerta-rgb),.95), inset 0 0 42px rgba(var(--alerta-rgb),.26); }
+}
+@keyframes alerta-pisca { 0% { opacity: 1; } 100% { opacity: .45; } }
+@keyframes alerta-ping {
+  0%   { box-shadow: 0 0 0 0 rgba(255,255,255,.8); }
+  100% { box-shadow: 0 0 0 8px rgba(255,255,255,0); }
+}
+
+@media (max-width: 560px) {
+  .urgencia { padding: 14px 16px; gap: 10px; }
+  .urgencia__txt { font-size: 15px; }
 }
 
 @media (max-width: 880px) {
