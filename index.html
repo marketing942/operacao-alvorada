@@ -77,9 +77,9 @@
     {
       "@type": "Offer",
       "name": "Ingresso Padrão — 3º lote",
-      "price": "47.90",
+      "price": "85.00",
       "priceCurrency": "BRL",
-      "availability": "https://schema.org/InStock",
+      "availability": "https://schema.org/LimitedAvailability",
       "url": "https://operacaoalvorada.cppem.com.br/#ingressos"
     },
     {
@@ -87,7 +87,7 @@
       "name": "Ingresso VIP",
       "price": "167.00",
       "priceCurrency": "BRL",
-      "availability": "https://schema.org/InStock",
+      "availability": "https://schema.org/SoldOut",
       "url": "https://operacaoalvorada.cppem.com.br/#ingressos"
     }
   ]
@@ -100,7 +100,7 @@
      tema que não cabem numa variável do kit vencem por ordem de cascata, sem
      precisar de !important nem de editar o kit. -->
 <link rel="stylesheet" href="exit-popup-kit/exit-popup.css?v=1">
-<link rel="stylesheet" href="styles.css?v=3">
+<link rel="stylesheet" href="styles.css?v=4">
 </head>
 <body>
 
@@ -249,11 +249,11 @@
 <section class="section" id="ingressos">
   <div class="container">
     <div class="section__head">
-      <span class="eyebrow">Escolha o seu ingresso</span>
-      <h2 class="section__title">Duas formas de entrar<br>na <span class="gold">operação</span></h2>
+      <span class="eyebrow">Só sobrou um caminho</span>
+      <h2 class="section__title">O VIP esgotou.<br>Restam as <span class="gold">últimas cadeiras</span></h2>
       <p class="section__lead">
-        A madrugada é a mesma para os dois. O que muda é o que você leva
-        embora — e quem senta na primeira fila.
+        As 50 vagas do VIP acabaram. O que ainda está de pé é o 3º e último lote
+        do Ingresso Padrão — e ele fecha quando a última cadeira for ocupada.
       </p>
     </div>
 
@@ -273,10 +273,12 @@
     <div class="planos">
 
       <!-- ---------- PADRÃO ---------- -->
-      <article class="plano plano--ultimo">
+      <article class="plano plano--ultimo plano--heroi">
+        <i class="plano__aurora" aria-hidden="true"></i>
+        <i class="plano__varredura" aria-hidden="true"></i>
         <span class="plano__alerta"><i class="urgencia__dot" aria-hidden="true"></i> Último lote</span>
         <header class="plano__head">
-          <span class="plano__tag">3º lote</span>
+          <span class="plano__tag">3º lote · única opção aberta</span>
           <h3 class="plano__nome">Ingresso Padrão</h3>
           <p class="plano__desc">A cadeira na sede e a operação inteira, do começo ao amanhecer.</p>
         </header>
@@ -296,22 +298,29 @@
             <b><i>R$</i>85,00</b>
             <span class="plano__preco-nota plano__preco-nota--pisca" id="precoNotaPadrao">restam 5 de 20 neste lote</span>
           </div>
-          <button class="btn btn--ghost btn--lg btn--block js-open" type="button"
+          <button class="btn btn--gold btn--lg btn--block shine btn--bate js-open" type="button"
                   data-produto="Ingresso Padrão — 3º lote"
                   data-checkout="https://checkout.cppem.com.br/pay/operacao-alvorada-11-terceiro-lote">
-            <span>Quero o padrão</span>
+            <span>Quero minha cadeira agora</span>
           </button>
+          <span class="plano__reforco">Pagamento em segundos · confirmação na hora</span>
         </div>
       </article>
 
       <!-- ---------- VIP ---------- -->
-      <article class="plano plano--vip">
+      <article class="plano plano--vip plano--esgotado" aria-label="Ingresso VIP — esgotado">
         <i class="plano__brasao" aria-hidden="true"></i>
-        <span class="plano__selo">Mais completo</span>
+        <span class="plano__selo plano__selo--off">Esgotado</span>
+        <!-- Carimbo por cima do card inteiro: é o que comunica "acabou" antes
+             de qualquer leitura, e o que empurra o olho para o card ao lado. -->
+        <span class="plano__carimbo" aria-hidden="true">
+          <b>Esgotado</b>
+          <i>50/50 vagas preenchidas</i>
+        </span>
         <header class="plano__head">
-          <span class="plano__tag">Vagas limitadas</span>
+          <span class="plano__tag">Vendas encerradas</span>
           <h3 class="plano__nome">Ingresso VIP</h3>
-          <p class="plano__desc">Tudo do padrão, mais os bônus do VIP. São só 50 ingressos.</p>
+          <p class="plano__desc">As 50 vagas do VIP foram preenchidas. Não há reabertura.</p>
         </header>
 
         <ul class="plano__lista">
@@ -326,18 +335,16 @@
           <div class="plano__preco">
             <span class="plano__preco-label">Ingresso VIP</span>
             <b><i>R$</i>167</b>
-            <span class="plano__preco-nota">Apenas 50 pessoas</span>
+            <span class="plano__preco-nota">Lote encerrado</span>
           </div>
-          <!-- Produto "Operação Alvorada 11 especial", R$ 167,00 no checkout.
-               O slug é `-especial`, e não `-vip`: o checkout devolve HTTP 200
-               para qualquer caminho e só resolve a oferta no cliente, então um
-               slug errado não dá erro — mostra "Oferta não encontrada!" depois
-               de o comprador já ter deixado nome, e-mail e WhatsApp. -->
-          <button class="btn btn--gold btn--lg btn--block shine js-open" type="button"
-                  data-produto="Ingresso VIP"
-                  data-checkout="https://checkout.cppem.com.br/pay/op-alvorada-11-especial">
-            <span>Quero o VIP</span>
-          </button>
+          <!-- Checkout do VIP removido com o lote esgotado. O produto no
+               checkout era "Operação Alvorada 11 especial" (slug `-especial`,
+               não `-vip`) — se o VIP voltar em outra edição, é esse o destino:
+               https://checkout.cppem.com.br/pay/op-alvorada-11-especial -->
+          <div class="btn btn--lg btn--block btn--off" aria-disabled="true">
+            <span>Esgotado</span>
+          </div>
+          <span class="plano__reforco plano__reforco--off">Quem ficou de fora ainda pega o padrão ao lado</span>
         </div>
       </article>
 
@@ -355,21 +362,21 @@
       </figure>
 
       <div class="camisa__copy">
-        <span class="camisa__selo">Brinde do Ingresso VIP</span>
+        <span class="camisa__selo">Venda à parte</span>
         <h3>A camisa oficial da <span class="gold">11ª edição</span></h3>
         <p>
           Preta com detalhes em ouro, brasão da operação nas costas e o leão do
-          CPPEM no peito. Quem fecha o Ingresso VIP leva a camisa junto, sem
-          pagar nada a mais por ela.
+          CPPEM no peito. Com o VIP esgotado, ela passa a ser vendida à parte,
+          fora do valor da entrada.
         </p>
         <ul class="camisa__itens">
           <li>Frente com o nome da operação e a edição</li>
           <li>Costas com o brasão completo</li>
-          <li>Inclusa no Ingresso VIP, sem custo extra</li>
+          <li>Vendida à parte, enquanto durar o estoque</li>
         </ul>
-        <a class="btn btn--gold shine" href="#ingressos"><span>Quero o VIP com a camisa</span></a>
+        <a class="btn btn--gold shine" href="#ingressos"><span>Garantir minha cadeira</span></a>
         <p class="camisa__nota">
-          Não vai de VIP? A camisa também é vendida à parte, fora do valor da entrada.
+          A camisa é comprada na hora da inscrição, com a equipe do CPPEM.
         </p>
       </div>
     </div>
@@ -884,7 +891,7 @@
   </div>
 </div>
 
-<script src="script.js?v=3"></script>
+<script src="script.js?v=4"></script>
 <script src="exit-popup-kit/exit-popup.js?v=1"></script>
 
   <!-- Google Tag Manager (noscript) -->

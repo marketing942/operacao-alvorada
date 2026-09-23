@@ -1309,6 +1309,133 @@ strong, b { font-weight: 700; color: var(--text); }
   .urgencia__txt { font-size: 15px; }
 }
 
+/* =========================================================
+   VIP ESGOTADO × PADRÃO EM DESTAQUE
+   O par de cards trabalha por contraste: o VIP perde a cor e ganha
+   carimbo, o padrão ganha luz, brilho e movimento. Um empurra o olho
+   para o outro.
+   ========================================================= */
+
+/* ---- VIP esgotado ---- */
+.plano--esgotado {
+  filter: grayscale(1) brightness(.62) contrast(.92);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.1);
+  /* o card morto não sobe no hover: nada ali é clicável */
+  pointer-events: none; user-select: none;
+}
+.plano--esgotado:hover { transform: none; box-shadow: inset 0 0 0 1px rgba(255,255,255,.1); }
+.plano--esgotado .plano__nome,
+.plano--esgotado .plano__preco b {
+  background: none; -webkit-background-clip: border-box; background-clip: border-box;
+  color: var(--text-mute); text-shadow: none;
+}
+/* preço riscado: o valor deixou de existir, não é mais uma oferta */
+.plano--esgotado .plano__preco b { position: relative; display: inline-block; }
+.plano--esgotado .plano__preco b::after {
+  content: ''; position: absolute; left: -6%; right: -6%; top: 52%; height: 3px;
+  background: rgba(255,255,255,.55); transform: rotate(-7deg);
+}
+.plano--esgotado .plano__lista li { opacity: .5; }
+.plano--esgotado .plano__brasao { opacity: .06; }
+.plano__selo--off {
+  background: linear-gradient(168deg, #6c6c72, #4a4a50 55%, #33333a);
+  color: #dcdce2;
+}
+
+/* carimbo de "esgotado" atravessando o card, como um selo batido na ficha */
+.plano__carimbo {
+  position: absolute; z-index: 3; inset: 0; margin: auto;
+  width: max-content; height: max-content;
+  display: grid; gap: 6px; place-items: center;
+  padding: 14px 30px; transform: rotate(-11deg);
+  color: #f2f2f5; text-align: center;
+  border: 4px double rgba(255,255,255,.75);
+  background: rgba(12,12,14,.55);
+  box-shadow: 0 0 0 1px rgba(0,0,0,.5), 0 18px 40px rgba(0,0,0,.45);
+  animation: carimbo-bate .7s var(--ease) both;
+}
+.plano__carimbo b {
+  font-family: var(--font-title); font-size: clamp(30px, 4.6vw, 44px); font-weight: 800;
+  letter-spacing: 6px; text-transform: uppercase; line-height: 1;
+}
+.plano__carimbo i {
+  font-style: normal; font-size: 11px; font-weight: 700;
+  letter-spacing: 3px; text-transform: uppercase; color: rgba(242,242,245,.7);
+}
+@keyframes carimbo-bate {
+  from { opacity: 0; transform: rotate(-11deg) scale(2.4); }
+  60%  { opacity: 1; transform: rotate(-11deg) scale(.94); }
+  to   { opacity: 1; transform: rotate(-11deg) scale(1); }
+}
+
+/* botão morto: mantém o peso visual do lugar, sem convidar ao clique */
+.btn--off {
+  display: grid; place-items: center; cursor: not-allowed;
+  background: #1d1d22; color: var(--text-mute);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.12);
+  font-family: var(--font-title); font-weight: 800;
+  letter-spacing: 2.6px; text-transform: uppercase;
+}
+
+/* ---- Padrão em destaque ---- */
+.plano--heroi {
+  z-index: 1; transform: scale(1.035);
+  animation: heroi-respira 3.6s ease-in-out infinite;
+}
+.plano--heroi:hover { transform: scale(1.035) translateY(-5px); }
+
+/* clarão dourado girando por trás do conteúdo */
+.plano__aurora {
+  position: absolute; inset: -40%; z-index: 0; pointer-events: none;
+  background:
+    conic-gradient(from 0deg,
+      transparent 0deg, rgba(175,146,86,.30) 40deg, transparent 110deg,
+      rgba(255,59,48,.18) 190deg, transparent 260deg, rgba(240,220,176,.22) 320deg, transparent 360deg);
+  animation: aurora-gira 9s linear infinite;
+  opacity: .55;
+}
+/* passada de luz atravessando o card inteiro */
+.plano__varredura {
+  position: absolute; top: -60%; left: 0; z-index: 2;
+  width: 38%; height: 220%; pointer-events: none;
+  background: linear-gradient(90deg,
+    transparent 0%, rgba(255,255,255,.08) 35%,
+    rgba(255,255,255,.35) 50%, rgba(255,255,255,.08) 65%, transparent 100%);
+  animation: shine-sweep 4.2s var(--ease) infinite;
+}
+.plano--heroi .plano__preco b { animation: preco-brilha 2.6s ease-in-out infinite; }
+.plano__reforco {
+  display: block; margin-top: 12px; text-align: center;
+  font-size: 11.5px; font-weight: 700; letter-spacing: 1.6px;
+  text-transform: uppercase; color: var(--text-mute);
+}
+.plano__reforco--off { color: rgba(255,255,255,.45); }
+
+/* o botão bate como um coração acelerado — é o único caminho aberto */
+.btn--bate { animation: btn-bate 1.6s ease-in-out infinite; }
+
+@keyframes heroi-respira {
+  0%, 100% { box-shadow: inset 0 0 0 1px rgba(var(--alerta-rgb),.5), 0 0 30px rgba(175,146,86,.14); }
+  50%      { box-shadow: inset 0 0 0 2px rgba(var(--alerta-rgb),.95), 0 0 60px rgba(175,146,86,.3); }
+}
+@keyframes aurora-gira { to { transform: rotate(360deg); } }
+@keyframes preco-brilha {
+  0%, 100% { filter: brightness(1); text-shadow: 0 0 34px rgba(175,146,86,.22); }
+  50%      { filter: brightness(1.28); text-shadow: 0 0 46px rgba(175,146,86,.6); }
+}
+@keyframes btn-bate {
+  0%, 100%  { transform: scale(1); }
+  12%       { transform: scale(1.045); }
+  24%       { transform: scale(1); }
+  36%       { transform: scale(1.03); }
+  48%       { transform: scale(1); }
+}
+
+@media (max-width: 880px) {
+  /* empilhado, o card ampliado encostaria no vizinho */
+  .plano--heroi, .plano--heroi:hover { transform: none; }
+}
+
 @media (max-width: 880px) {
   .planos { grid-template-columns: 1fr; max-width: 520px; }
   /* card estreito: o brasão precisa recuar, senão a caveira compete com a
