@@ -59,8 +59,8 @@
        data-checkout/data-produto (index.html) — estes aqui são só o destino de
        segurança para um CTA que esqueça os atributos, para nunca sobrar um
        botão que leve a lugar nenhum. */
-    produtoPadrao: "Ingresso Padrão — 3º lote",
-    checkoutPadrao: "https://checkout.cppem.com.br/pay/op-alvorada-11-ingresso",
+    produtoPadrao: "Transmissão Online — Operação Alvorada 11",
+    checkoutPadrao: "https://checkout.cppem.com.br/pay/operacao-alvorada-11-ingresso-online",
 
     redirectDelay: 1500,     // §7.6 — abaixo de ~1s começa a perder eventos
     phoneMode: "celular_br", // §8.6 — "celular_br" | "celular_ou_fixo_br" | "internacional"
@@ -180,53 +180,28 @@
     var cdTimer = setInterval(tickCountdown, 1000);
     tickCountdown();
 
-    /* ---------- barra do 1º lote ---------- */
-    /* O 1º lote são 20 ingressos do tipo padrão — não as 110 da sede, que é a
-       capacidade total do evento somando todos os lotes. O VIP é um produto
-       à parte, com 50 vagas fixas, e não entra nesta projeção.
+    /* ---------- barra da lotação presencial ---------- */
+    /* As 110 cadeiras da sede (padrão + VIP) estão vendidas: a barra fica
+       cheia e o texto comunica lotação, não escassez. Os dois checkouts
+       presenciais saíram do HTML — o que continua à venda é a transmissão.
 
-       A barra é ancorada num número REAL e cresce sozinha daí até a data do
-       evento: em DATA_ANCORA havia OCUPADAS_ANCORA cadeiras vendidas, e a
-       projeção caminha linearmente até OCUPADAS_TETO na véspera da abertura.
-       É determinística pela data — recarregar a página nunca faz o número
-       andar para trás. Para recalibrar com a venda real, basta atualizar as
-       duas constantes da âncora — e elas PRECISAM ser recalibradas: as
-       anteriores (68 de 150) eram uma contagem real do lote antigo, e aqui
-       foram só reescaladas na mesma proporção. */
-    var LOTE_INGRESSOS  = 20;
-    /* fim do dia 31/07, não o começo: antes da âncora o avanço é travado em 0,
-       então o dia inteiro mostra exatamente as 68 cadeiras contadas na mão. */
-    var DATA_ANCORA     = new Date("2026-07-31T23:59:00-03:00").getTime();
-    var OCUPADAS_ANCORA = 9;
-    var OCUPADAS_TETO   = 19;    // nunca 20: sempre sobra a última chance
+       Se numa próxima edição a barra precisar andar sozinha de novo, a
+       projeção por âncora de data está no histórico do git (commits do
+       3º lote). */
+    var CADEIRAS = 110;
 
     var loteFill = document.getElementById("loteFill");
     var loteBar  = document.getElementById("loteBar");
     var loteLeft = document.getElementById("loteLeft");
     var dockLeft = document.getElementById("dockLeft");
-    var precoNota = document.getElementById("precoNotaPadrao");
-
-    /* 3º e último lote: o número de restantes é fixo por decisão comercial e
-       vence a projeção acima. Para voltar à projeção, deixe como null. */
-    var RESTAM_FIXO = 5;
-    var urgLeft = document.getElementById("urgLeft");
 
     if (loteFill && loteLeft) {
-      var span = alvo - DATA_ANCORA;
-      var andado = Math.min(Math.max((Date.now() - DATA_ANCORA) / span, 0), 1);
-      var ocupadas = Math.round(OCUPADAS_ANCORA + (OCUPADAS_TETO - OCUPADAS_ANCORA) * andado);
-      if (RESTAM_FIXO !== null) ocupadas = LOTE_INGRESSOS - RESTAM_FIXO;
-      var restam = Math.max(LOTE_INGRESSOS - ocupadas, 1);
-      var pct = Math.round((ocupadas / LOTE_INGRESSOS) * 100);
-
-      if (urgLeft) urgLeft.textContent = String(restam);
-      loteLeft.textContent = "restam só " + restam + " de " + LOTE_INGRESSOS + " ingressos";
-      if (dockLeft) dockLeft.textContent = "restam só " + restam + " ingressos";
-      if (precoNota) precoNota.textContent = "restam " + restam + " de " + LOTE_INGRESSOS + " neste lote";
-      if (loteBar) loteBar.setAttribute("aria-valuenow", String(pct));
+      loteLeft.textContent = CADEIRAS + "/" + CADEIRAS + " cadeiras ocupadas";
+      if (dockLeft) dockLeft.textContent = "presencial esgotado · assista ao vivo";
+      if (loteBar) loteBar.setAttribute("aria-valuenow", "100");
 
       // pinta no próximo frame para a transição de largura acontecer
-      requestAnimationFrame(function () { loteFill.style.width = pct + "%"; });
+      requestAnimationFrame(function () { loteFill.style.width = "100%"; });
     }
   }
 

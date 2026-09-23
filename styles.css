@@ -1384,15 +1384,19 @@ strong, b { font-weight: 700; color: var(--text); }
 }
 .plano--heroi:hover { transform: scale(1.035) translateY(-5px); }
 
-/* clarão dourado girando por trás do conteúdo */
+/* Clarão girando por trás do conteúdo.
+   São manchas radiais, e não um conic-gradient: o cone gira com as bordas
+   duras aparecendo como um quadrado atravessando o card. Manchas radiais
+   desfocadas giram sem mostrar emenda. */
 .plano__aurora {
-  position: absolute; inset: -40%; z-index: 0; pointer-events: none;
+  position: absolute; inset: -55%; z-index: 0; pointer-events: none;
   background:
-    conic-gradient(from 0deg,
-      transparent 0deg, rgba(175,146,86,.30) 40deg, transparent 110deg,
-      rgba(255,59,48,.18) 190deg, transparent 260deg, rgba(240,220,176,.22) 320deg, transparent 360deg);
-  animation: aurora-gira 9s linear infinite;
-  opacity: .55;
+    radial-gradient(34% 34% at 32% 30%, rgba(175,146,86,.42), transparent 62%),
+    radial-gradient(30% 30% at 70% 64%, rgba(255,59,48,.26), transparent 64%),
+    radial-gradient(26% 26% at 64% 24%, rgba(240,220,176,.24), transparent 66%);
+  filter: blur(30px);
+  animation: aurora-gira 16s linear infinite;
+  opacity: .6;
 }
 /* passada de luz atravessando o card inteiro */
 .plano__varredura {
@@ -1435,6 +1439,58 @@ strong, b { font-weight: 700; color: var(--text); }
   /* empilhado, o card ampliado encostaria no vizinho */
   .plano--heroi, .plano--heroi:hover { transform: none; }
 }
+
+/* ---- Transmissão ao vivo: a única porta aberta ----
+   Ocupa a linha inteira acima dos dois cards esgotados. Em duas colunas
+   internas para não virar uma torre de texto na largura toda. */
+.plano--online { grid-column: 1 / -1; }
+.plano--online .plano__head { padding-bottom: 26px; }
+.plano--online .plano__lista { padding-bottom: 6px; }
+@media (min-width: 881px) {
+  .plano--online {
+    display: grid; grid-template-columns: 1.15fr .85fr;
+    grid-template-areas: 'head rodape' 'lista rodape';
+    align-content: start; column-gap: 8px;
+  }
+  .plano--online .plano__head   { grid-area: head; border-bottom: 0; padding-bottom: 8px; }
+  .plano--online .plano__lista  { grid-area: lista; }
+  .plano--online .plano__rodape { grid-area: rodape; align-self: center; padding: 32px 32px 32px 0; }
+}
+
+/* preço em parcela: o valor cheio vira a segunda linha, menor */
+.plano__parcela {
+  display: block; font-family: var(--font-ui); font-size: 15px; font-weight: 700;
+  letter-spacing: 2.4px; text-transform: uppercase; color: var(--text-dim);
+  -webkit-text-fill-color: var(--text-dim); margin-bottom: 2px;
+}
+.plano__avista {
+  display: block; margin-top: 8px; font-size: 15px; color: var(--text-dim);
+  letter-spacing: .6px;
+}
+.plano__avista strong { color: var(--gold-light); font-weight: 800; }
+
+/* ---- barra da sede lotada ---- */
+.lote__bar--cheia i { background: linear-gradient(90deg, #7a3b36, var(--alerta)); }
+.lote__left { color: var(--alerta); }
+
+/* ---- camisa esgotada ---- */
+.camisa--esgotada .camisa__foto { position: relative; filter: grayscale(1) brightness(.6); }
+.camisa__carimbo {
+  position: absolute; inset: 0; z-index: 2; margin: auto;
+  width: max-content; height: max-content;
+  padding: 10px 26px; transform: rotate(-10deg);
+  font-family: var(--font-title); font-size: clamp(22px, 3.4vw, 34px); font-weight: 800;
+  letter-spacing: 5px; text-transform: uppercase; color: #f2f2f5;
+  border: 4px double rgba(255,255,255,.75); background: rgba(12,12,14,.55);
+}
+/* dupla classe de propósito: a regra base de .camisa__selo vem depois neste
+   arquivo e venceria uma classe só */
+.camisa__selo.camisa__selo--off {
+  background: linear-gradient(168deg, #6c6c72, #4a4a50 55%, #33333a);
+  box-shadow: none; color: #1a1a1e;
+}
+.camisa--esgotada .camisa__itens li { opacity: .6; }
+.camisa--esgotada .camisa__itens li::before { background: #6c6c72; }
 
 @media (max-width: 880px) {
   .planos { grid-template-columns: 1fr; max-width: 520px; }

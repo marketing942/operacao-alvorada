@@ -57,7 +57,7 @@
   "startDate": "2026-09-26T19:00:00-03:00",
   "endDate": "2026-09-27T07:00:00-03:00",
   "eventStatus": "https://schema.org/EventScheduled",
-  "eventAttendanceMode": "https://schema.org/OfflineEventAttendanceMode",
+  "eventAttendanceMode": "https://schema.org/MixedEventAttendanceMode",
   "image": "https://operacaoalvorada.cppem.com.br/public/og-alvorada.jpg",
   "url": "https://operacaoalvorada.cppem.com.br/",
   "inLanguage": "pt-BR",
@@ -76,10 +76,18 @@
   "offers": [
     {
       "@type": "Offer",
+      "name": "Transmissão Online — ao vivo",
+      "price": "19.90",
+      "priceCurrency": "BRL",
+      "availability": "https://schema.org/InStock",
+      "url": "https://operacaoalvorada.cppem.com.br/#ingressos"
+    },
+    {
+      "@type": "Offer",
       "name": "Ingresso Padrão — 3º lote",
       "price": "85.00",
       "priceCurrency": "BRL",
-      "availability": "https://schema.org/LimitedAvailability",
+      "availability": "https://schema.org/SoldOut",
       "url": "https://operacaoalvorada.cppem.com.br/#ingressos"
     },
     {
@@ -100,7 +108,7 @@
      tema que não cabem numa variável do kit vencem por ordem de cascata, sem
      precisar de !important nem de editar o kit. -->
 <link rel="stylesheet" href="exit-popup-kit/exit-popup.css?v=1">
-<link rel="stylesheet" href="styles.css?v=4">
+<link rel="stylesheet" href="styles.css?v=6">
 </head>
 <body>
 
@@ -135,7 +143,7 @@
     </span>
 
     <a class="btn btn--gold btn--sm shine" href="#ingressos">
-      <span>Garantir minha vaga</span>
+      <span>Assistir ao vivo</span>
     </a>
 
   </div>
@@ -161,13 +169,14 @@
       </h1>
 
       <p class="hero__sub anim d3">
-        Uma <strong>madrugada inteira de estudos</strong>, presencial, das <strong>19h às 07h</strong>,
-        com foco total em <strong>PMPE e PCPE</strong>. Quem chega ao amanhecer não sai o mesmo.
+        Uma <strong>madrugada inteira de estudos</strong>, das <strong>19h às 07h</strong>, com foco
+        total em <strong>PMPE e PCPE</strong>. A sede lotou — agora a entrada é
+        <strong>ao vivo, por R$ 19,90</strong>.
       </p>
 
       <div class="hero__cta anim d4">
         <a class="btn btn--gold btn--lg shine" href="#ingressos">
-          <span>Quero minha vaga na Alvorada</span>
+          <span>Quero assistir ao vivo</span>
         </a>
         <a class="btn btn--ghost btn--lg" href="#incluso"><span>Ver o que está incluso</span></a>
       </div>
@@ -249,38 +258,74 @@
 <section class="section" id="ingressos">
   <div class="container">
     <div class="section__head">
-      <span class="eyebrow">Só sobrou um caminho</span>
-      <h2 class="section__title">O VIP esgotou.<br>Restam as <span class="gold">últimas cadeiras</span></h2>
+      <span class="eyebrow">A sede lotou</span>
+      <h2 class="section__title">Presencial esgotado.<br>Ainda dá para <span class="gold">assistir ao vivo</span></h2>
       <p class="section__lead">
-        As 50 vagas do VIP acabaram. O que ainda está de pé é o 3º e último lote
-        do Ingresso Padrão — e ele fecha quando a última cadeira for ocupada.
+        As 110 cadeiras da sede acabaram — padrão e VIP, os dois fechados. Quem
+        ficou de fora entra pela transmissão ao vivo, a madrugada inteira, da sua casa.
       </p>
     </div>
 
-    <!-- Alerta de último lote. Os números vêm do script.js (bloco do lote):
-         dias pelo countdown, ingressos pela constante RESTAM_FIXO. -->
+    <!-- Alerta da última porta aberta. Os dias vêm do countdown (script.js). -->
     <button class="urgencia js-open" type="button"
-            data-produto="Ingresso Padrão — 3º lote"
-            data-checkout="https://checkout.cppem.com.br/pay/operacao-alvorada-11-terceiro-lote">
+            data-produto="Transmissão Online — Operação Alvorada 11"
+            data-checkout="https://checkout.cppem.com.br/pay/operacao-alvorada-11-ingresso-online">
       <span class="urgencia__tag"><i class="urgencia__dot" aria-hidden="true"></i> Última chance</span>
       <span class="urgencia__txt">
-        <b>3º e último lote</b> — restam só <strong class="urgencia__num" id="urgLeft">5</strong> de 20 ingressos
-        · faltam <strong id="urgDays">4</strong> dias
+        <b>Sede esgotada</b> — resta a <strong>transmissão ao vivo</strong>
+        · faltam <strong id="urgDays">3</strong> dias
       </span>
-      <span class="urgencia__cta">Garantir agora →</span>
+      <span class="urgencia__cta">Assistir ao vivo →</span>
     </button>
 
     <div class="planos">
 
-      <!-- ---------- PADRÃO ---------- -->
-      <article class="plano plano--ultimo plano--heroi">
+      <!-- ---------- ONLINE (única opção aberta) ---------- -->
+      <article class="plano plano--ultimo plano--heroi plano--online">
         <i class="plano__aurora" aria-hidden="true"></i>
         <i class="plano__varredura" aria-hidden="true"></i>
-        <span class="plano__alerta"><i class="urgencia__dot" aria-hidden="true"></i> Último lote</span>
+        <span class="plano__alerta"><i class="urgencia__dot" aria-hidden="true"></i> Ao vivo</span>
         <header class="plano__head">
-          <span class="plano__tag">3º lote · única opção aberta</span>
+          <span class="plano__tag">Única opção aberta</span>
+          <h3 class="plano__nome">Transmissão ao vivo</h3>
+          <p class="plano__desc">A operação inteira na sua tela, das 19h às 07h, com a tropa toda.</p>
+        </header>
+
+        <ul class="plano__lista">
+          <li>Transmissão ao vivo da madrugada inteira, das 19h às 07h;</li>
+          <li>Os mesmos professores e convidados de quem está na sede;</li>
+          <li>Assista de onde estiver, do celular ou do computador;</li>
+          <li>Acesso liberado assim que o pagamento for confirmado.</li>
+        </ul>
+
+        <div class="plano__rodape">
+          <div class="plano__preco">
+            <span class="plano__preco-label">Acesso à transmissão</span>
+            <b><span class="plano__parcela">12x de</span><i>R$</i>2,08</b>
+            <span class="plano__avista">ou <strong>R$ 19,90</strong> à vista</span>
+            <span class="plano__preco-nota plano__preco-nota--pisca">Encerra quando a operação começar</span>
+          </div>
+          <button class="btn btn--gold btn--lg btn--block shine btn--bate js-open" type="button"
+                  data-produto="Transmissão Online — Operação Alvorada 11"
+                  data-checkout="https://checkout.cppem.com.br/pay/operacao-alvorada-11-ingresso-online">
+            <span>Quero assistir ao vivo</span>
+          </button>
+          <span class="plano__reforco">Pagamento em segundos · acesso na hora</span>
+        </div>
+      </article>
+
+
+      <!-- ---------- PADRÃO ---------- -->
+      <article class="plano plano--esgotado" aria-label="Ingresso Padrão — esgotado">
+        <span class="plano__selo plano__selo--off">Esgotado</span>
+        <span class="plano__carimbo" aria-hidden="true">
+          <b>Esgotado</b>
+          <i>3º e último lote encerrado</i>
+        </span>
+        <header class="plano__head">
+          <span class="plano__tag">Vendas encerradas</span>
           <h3 class="plano__nome">Ingresso Padrão</h3>
-          <p class="plano__desc">A cadeira na sede e a operação inteira, do começo ao amanhecer.</p>
+          <p class="plano__desc">As cadeiras da sede acabaram. Não abre um 4º lote.</p>
         </header>
 
         <ul class="plano__lista">
@@ -296,14 +341,15 @@
           <div class="plano__preco">
             <span class="plano__preco-label">Ingresso no 3º lote</span>
             <b><i>R$</i>85,00</b>
-            <span class="plano__preco-nota plano__preco-nota--pisca" id="precoNotaPadrao">restam 5 de 20 neste lote</span>
+            <span class="plano__preco-nota" id="precoNotaPadrao">20/20 ingressos vendidos</span>
           </div>
-          <button class="btn btn--gold btn--lg btn--block shine btn--bate js-open" type="button"
-                  data-produto="Ingresso Padrão — 3º lote"
-                  data-checkout="https://checkout.cppem.com.br/pay/operacao-alvorada-11-terceiro-lote">
-            <span>Quero minha cadeira agora</span>
-          </button>
-          <span class="plano__reforco">Pagamento em segundos · confirmação na hora</span>
+          <!-- Checkout do padrão removido com o 3º lote esgotado. Destino
+               anterior, caso precise voltar:
+               https://checkout.cppem.com.br/pay/operacao-alvorada-11-terceiro-lote -->
+          <div class="btn btn--lg btn--block btn--off" aria-disabled="true">
+            <span>Esgotado</span>
+          </div>
+          <span class="plano__reforco plano__reforco--off">Ainda dá para acompanhar pela transmissão</span>
         </div>
       </article>
 
@@ -344,7 +390,7 @@
           <div class="btn btn--lg btn--block btn--off" aria-disabled="true">
             <span>Esgotado</span>
           </div>
-          <span class="plano__reforco plano__reforco--off">Quem ficou de fora ainda pega o padrão ao lado</span>
+          <span class="plano__reforco plano__reforco--off">Quem ficou de fora assiste pela transmissão</span>
         </div>
       </article>
 
@@ -354,29 +400,30 @@
          ingressos, logo abaixo dos cards: quem acabou de ver os R$ 167 vê o
          que justifica a diferença. Ficar aqui também evita criar uma seção
          nova, que quebraria a alternância de fundos da página. -->
-    <div class="camisa">
+    <div class="camisa camisa--esgotada">
       <figure class="camisa__foto">
         <img src="public/blusaspremium.webp"
              alt="Camisa oficial da Operação Alvorada 11ª edição, frente e costas"
              width="1200" height="900" loading="lazy">
+        <figcaption class="camisa__carimbo" aria-hidden="true">Esgotada</figcaption>
       </figure>
 
       <div class="camisa__copy">
-        <span class="camisa__selo">Venda à parte</span>
+        <span class="camisa__selo camisa__selo--off">Estoque encerrado</span>
         <h3>A camisa oficial da <span class="gold">11ª edição</span></h3>
         <p>
           Preta com detalhes em ouro, brasão da operação nas costas e o leão do
-          CPPEM no peito. Com o VIP esgotado, ela passa a ser vendida à parte,
-          fora do valor da entrada.
+          CPPEM no peito. O estoque da 11ª edição acabou — ela não é mais vendida
+          para esta operação.
         </p>
         <ul class="camisa__itens">
           <li>Frente com o nome da operação e a edição</li>
           <li>Costas com o brasão completo</li>
-          <li>Vendida à parte, enquanto durar o estoque</li>
+          <li>Esgotada nesta edição</li>
         </ul>
-        <a class="btn btn--gold shine" href="#ingressos"><span>Garantir minha cadeira</span></a>
+        <div class="btn btn--block btn--off" aria-disabled="true"><span>Esgotada</span></div>
         <p class="camisa__nota">
-          A camisa é comprada na hora da inscrição, com a equipe do CPPEM.
+          Quem ainda quer estar na madrugada entra pela transmissão ao vivo.
         </p>
       </div>
     </div>
@@ -391,7 +438,7 @@
       <h2 class="section__title">O relógio não espera<br>quem ainda está decidindo</h2>
       <p class="section__lead">
         <strong>26 de setembro, 19h00.</strong> É quando a Operação Alvorada começa —
-        e a porta fecha com a última cadeira ocupada, não na véspera.
+        e a venda da transmissão fecha junto com o início da madrugada.
       </p>
     </div>
 
@@ -408,22 +455,22 @@
 
     <div class="lote">
       <div class="lote__head">
-        <span class="lote__title">3º e último lote — 20 ingressos</span>
+        <span class="lote__title">Presencial — 110 cadeiras</span>
         <span class="lote__left" id="loteLeft">carregando…</span>
       </div>
-      <div class="lote__bar" role="progressbar" aria-label="Ingressos do 3º lote já ocupados"
-           aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="loteBar">
+      <div class="lote__bar lote__bar--cheia" role="progressbar" aria-label="Cadeiras da sede ocupadas"
+           aria-valuemin="0" aria-valuemax="100" aria-valuenow="100" id="loteBar">
         <i id="loteFill"></i>
       </div>
       <p class="lote__note">
-        Este é o último lote: são 20 ingressos, de um total de 110 no evento. Quando
-        ele fechar, as vendas do padrão encerram — não existe 4º lote. Nas edições
-        anteriores as últimas cadeiras foram embora antes da semana do evento.
+        As 110 cadeiras da sede foram ocupadas: padrão e VIP encerrados, sem novo lote.
+        A única porta ainda aberta é a <strong>transmissão ao vivo</strong>, e ela para de
+        ser vendida quando a operação começar, no dia 26 às 19h.
       </p>
     </div>
 
     <div class="center">
-      <a class="btn btn--gold btn--lg shine" href="#ingressos"><span>Ver os ingressos</span></a>
+      <a class="btn btn--gold btn--lg shine" href="#ingressos"><span>Quero assistir ao vivo</span></a>
     </div>
   </div>
 </section>
@@ -696,15 +743,15 @@
       </details>
       <details class="faq__item">
         <summary>Vai ter gravação para assistir depois?</summary>
-        <p>Não. A Operação Alvorada é presencial e acontece uma única vez. Quem não estiver na cadeira naquela madrugada não participa desta edição.</p>
+        <p>Não. O que existe é a transmissão <strong>ao vivo</strong>, acompanhada na hora, das 19h às 07h. Quem não estiver na sede nem na transmissão naquela madrugada não participa desta edição.</p>
       </details>
       <details class="faq__item">
         <summary>Por que só 110 vagas?</summary>
         <p>É o que a sede comporta mantendo todo mundo perto do professor. Passou disso, vira plateia — e plateia não é o que a gente quer formar.</p>
       </details>
       <details class="faq__item">
-        <summary>O que acontece quando o 3º lote fecha?</summary>
-        <p>Ele é o último. Quando as 20 cadeiras dele acabarem, as vendas do ingresso padrão encerram e não abre outro lote.</p>
+        <summary>Ainda dá para comprar ingresso presencial?</summary>
+        <p>Não. As 110 cadeiras da sede acabaram — padrão e VIP encerrados, sem novo lote. A única forma de participar desta edição é a transmissão ao vivo, por R$ 19,90, à venda até a operação começar.</p>
       </details>
     </div>
   </div>
@@ -718,9 +765,9 @@
     <img class="final__brasao" src="public/brasao-alvorada.webp"
          alt="Operação Alvorada — A Ascensão" width="700" height="804" loading="lazy">
     <h2>Daqui a um ano você vai lembrar<br>da noite em que <span class="gold">decidiu</span>.</h2>
-    <p>26 e 27 de setembro · 19h às 07h · Sede CPPEM · 110 cadeiras.</p>
-    <a class="btn btn--gold btn--lg shine" href="#ingressos"><span>Garantir minha vaga agora</span></a>
-    <span class="final__note">Último lote aberto — quando fechar, não tem outro.</span>
+    <p>26 e 27 de setembro · 19h às 07h · Sede lotada · transmissão ao vivo aberta.</p>
+    <a class="btn btn--gold btn--lg shine" href="#ingressos"><span>Quero assistir ao vivo</span></a>
+    <span class="final__note">Transmissão por R$ 19,90 — à venda até a operação começar.</span>
   </div>
 </section>
 
@@ -784,10 +831,10 @@
 <!-- ================= BARRA FIXA (mobile) ================= -->
 <div class="dock" id="dock">
   <div class="dock__info">
-    <b><i class="urgencia__dot" aria-hidden="true"></i> Último lote</b>
-    <span id="dockLeft">restam 5 ingressos</span>
+    <b><i class="urgencia__dot" aria-hidden="true"></i> Ao vivo · R$ 19,90</b>
+    <span id="dockLeft">presencial esgotado · assista ao vivo</span>
   </div>
-  <a class="btn btn--gold shine" href="#ingressos"><span>Garantir vaga</span></a>
+  <a class="btn btn--gold shine" href="#ingressos"><span>Assistir ao vivo</span></a>
 </div>
 
 <!-- ================= MODAL ================= -->
@@ -804,7 +851,7 @@
     </p>
 
     <p class="modal__produto">
-      Ingresso escolhido: <b id="modalProduto">Ingresso Padrão — 3º lote</b>
+      Ingresso escolhido: <b id="modalProduto">Transmissão Online — Operação Alvorada 11</b>
     </p>
 
     <!-- NOMENCLATURA CANÔNICA (TRACKING.md §6.0) — não traduzir os nomes.
@@ -857,7 +904,7 @@
     <!-- Uma linha por benefício: em 320px cada quebra extra empurra o botão
          para fora da dobra do popup, que já roda no teto do max-height. -->
     <ul class="xp__benefits">
-      <li>Aviso antes de o último lote fechar.</li>
+      <li>Aviso antes de a venda da transmissão fechar.</li>
       <li>Os convidados da 11ª edição em primeira mão.</li>
       <li>Conteúdo diário de PMPE e PCPE.</li>
     </ul>
@@ -891,7 +938,7 @@
   </div>
 </div>
 
-<script src="script.js?v=4"></script>
+<script src="script.js?v=5"></script>
 <script src="exit-popup-kit/exit-popup.js?v=1"></script>
 
   <!-- Google Tag Manager (noscript) -->
