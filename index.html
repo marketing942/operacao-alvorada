@@ -270,44 +270,14 @@
   </div>
 </section>
 
-<!-- ================= VÍDEO INSTITUCIONAL =================
-     ESPAÇO RESERVADO. Para publicar o vídeo:
-       1. suba o vídeo na Panda (ou YouTube) e copie a URL de EMBED;
-       2. cole no src do <iframe> abaixo, tirando o atributo hidden dele;
-       3. apague ou deixe o bloco .video__vazio — ele some sozinho quando o
-          iframe tem src (ver script.js).
-     A moldura já reserva a altura em 16:9, então ligar o vídeo não empurra o
-     resto da página para baixo. -->
-<section class="section section--alt" id="video">
-  <div class="container">
-    <div class="section__head">
-      <span class="eyebrow">Como é por dentro</span>
-      <h2 class="section__title">A madrugada em <span class="gold">movimento</span></h2>
-      <p class="section__lead">
-        Dá para explicar em texto o que acontece das 19h às 07h — mas é mais honesto mostrar.
-      </p>
-    </div>
-
-    <div class="video">
-      <div class="video__moldura">
-        <iframe class="video__player" src="" title="Vídeo institucional da Operação Alvorada"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowfullscreen hidden></iframe>
-
-        <div class="video__vazio">
-          <i class="video__play" aria-hidden="true">
-            <svg viewBox="0 0 24 24"><path d="M9 7.5v9l7.5-4.5L9 7.5z"/></svg>
-          </i>
-          <b>Vídeo institucional em produção</b>
-          <span>A rotina de uma Operação Alvorada, do credenciamento ao corridão.</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+<!-- A seção "A madrugada em movimento" (vídeo institucional) foi retirada
+     enquanto o vídeo não existe: moldura vazia com aviso de "em produção" só
+     ocupa a dobra e enfraquece a página. O HTML dela está no histórico do git
+     (commit que criou a lista de espera) e o CSS continua no styles.css, então
+     devolver é colar a seção de volta e apontar o iframe para o embed. -->
 
 <!-- ================= SATISFAÇÃO + DEPOIMENTOS ================= -->
-<section class="section" id="depoimentos">
+<section class="section section--alt" id="depoimentos">
   <div class="container">
     <div class="section__head">
       <span class="eyebrow">O que ficou da 11ª edição</span>
