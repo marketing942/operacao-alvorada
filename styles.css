@@ -1600,3 +1600,136 @@ strong, b { font-weight: 700; color: var(--text); }
   .camisa__itens li::before { left: 50%; top: 2px; transform: translateX(-50%); }
   .camisa__copy .btn { width: 100%; }
 }
+
+/* =========================================================
+   VÍDEO INSTITUCIONAL
+   A moldura reserva 16:9 desde o primeiro pixel: quando o embed for colado
+   no index.html, a página não pula.
+   ========================================================= */
+.video { max-width: 940px; margin-inline: auto; }
+.video__moldura {
+  position: relative; aspect-ratio: 16 / 9; overflow: hidden;
+  background: linear-gradient(165deg, #15151a, var(--bg-2));
+  box-shadow: inset 0 0 0 1px rgba(175,146,86,.4), 0 30px 70px -40px #000;
+  clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 22px 100%, 0 calc(100% - 22px));
+}
+.video__player { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.video__vazio {
+  position: absolute; inset: 0; display: grid; place-content: center; justify-items: center;
+  gap: 10px; padding: 24px; text-align: center;
+  background: repeating-linear-gradient(135deg, #131318 0 12px, #101015 12px 24px);
+}
+.video__vazio b {
+  font-family: var(--font-title); font-size: clamp(16px, 2.4vw, 21px); font-weight: 800;
+  letter-spacing: 2px; text-transform: uppercase; color: var(--text);
+}
+.video__vazio span { font-size: 14.5px; color: var(--text-dim); max-width: 42ch; }
+.video__play {
+  display: grid; place-items: center; width: 74px; height: 74px; margin-bottom: 6px;
+  background: rgba(175,146,86,.12); box-shadow: inset 0 0 0 1px var(--border-active);
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+}
+.video__play svg { width: 34px; height: 34px; fill: var(--gold); }
+
+/* =========================================================
+   NOTA DE SATISFAÇÃO + DEPOIMENTOS
+   ========================================================= */
+.nota {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: center;
+  gap: 18px 34px; max-width: 760px; margin: 0 auto 34px; padding: 26px 32px;
+  background:
+    radial-gradient(420px 200px at 20% 50%, rgba(175,146,86,.14), transparent 70%),
+    linear-gradient(180deg, var(--bg-3), var(--bg-2));
+  box-shadow: inset 0 0 0 1px var(--border-active);
+  clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px));
+}
+.nota__valor { text-align: center; }
+.nota__valor b {
+  display: block; font-family: var(--font-title); font-size: clamp(46px, 7vw, 66px);
+  font-weight: 800; line-height: 1;
+  background: linear-gradient(180deg, var(--gold-pale), var(--gold) 52%, var(--gold-dark));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  text-shadow: 0 0 34px rgba(175,146,86,.22);
+}
+.nota__estrelas { display: block; margin-top: 6px; font-size: 19px; letter-spacing: 4px; color: var(--gold); }
+.nota__txt { flex: 1; min-width: 240px; font-size: 16px; line-height: 1.6; color: var(--text-dim); }
+.nota__txt strong { color: var(--gold-light); }
+
+.depo__aviso {
+  max-width: 720px; margin: 0 auto 26px; text-align: center;
+  font-size: 13.5px; line-height: 1.6; color: var(--text-mute);
+}
+.depo__aviso strong { color: var(--text-dim); }
+
+/* Colunas, e não grid: os prints têm alturas muito diferentes, e em grid
+   sobraria um buraco embaixo de cada card curto. */
+.depo { columns: 3; column-gap: 18px; }
+.depo__item {
+  break-inside: avoid; margin: 0 0 18px; overflow: hidden;
+  background: #0e0e12; box-shadow: inset 0 0 0 1px var(--border);
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+  transition: box-shadow var(--t), transform var(--t);
+}
+.depo__item:hover { transform: translateY(-4px); box-shadow: inset 0 0 0 1px var(--border-active); }
+.depo__item img { width: 100%; height: auto; display: block; }
+
+/* =========================================================
+   LISTA DE ESPERA
+   ========================================================= */
+.lista {
+  display: grid; grid-template-columns: 1fr 1fr; align-items: center;
+  gap: clamp(24px, 4vw, 48px);
+  max-width: 940px; margin-inline: auto; padding: clamp(26px, 3.4vw, 40px);
+  background:
+    radial-gradient(520px 300px at 18% 40%, rgba(175,146,86,.13), transparent 70%),
+    linear-gradient(180deg, var(--bg-3), var(--bg-2));
+  box-shadow: inset 0 0 0 1px var(--border-active);
+  clip-path: polygon(0 0, calc(100% - 22px) 0, 100% 22px, 100% 100%, 22px 100%, 0 calc(100% - 22px));
+}
+.lista__copy h3 {
+  font-family: var(--font-title); font-size: clamp(19px, 2.4vw, 25px); font-weight: 800;
+  line-height: 1.1; letter-spacing: .8px; text-transform: uppercase; color: var(--text);
+  margin-bottom: 18px;
+}
+.lista__itens { list-style: none; display: grid; gap: 13px; }
+.lista__itens li {
+  position: relative; padding-left: 28px;
+  font-size: 15.5px; line-height: 1.55; color: var(--text-dim);
+}
+.lista__itens li::before {
+  content: ''; position: absolute; left: 0; top: .5em;
+  width: 10px; height: 10px; background: var(--gold);
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+}
+.lista__itens strong { color: var(--gold-light); }
+.lista__nota {
+  margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border);
+  font-size: 13.5px; color: var(--text-mute);
+}
+
+.lista__ok { text-align: center; padding: 10px 0; }
+.lista__ok:focus { outline: 0; }
+.lista__ok-ico {
+  display: grid; place-items: center; width: 64px; height: 64px; margin: 0 auto 16px;
+  background: rgba(175,146,86,.12); box-shadow: inset 0 0 0 1px var(--border-active);
+  clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+}
+.lista__ok-ico svg { width: 30px; height: 30px; fill: none; stroke: var(--gold); stroke-width: 2.4; }
+.lista__ok h3 {
+  font-family: var(--font-title); font-size: 22px; font-weight: 800;
+  letter-spacing: 1.4px; text-transform: uppercase; color: var(--gold-light);
+  margin-bottom: 10px;
+}
+.lista__ok p { font-size: 15.5px; line-height: 1.6; color: var(--text-dim); margin-bottom: 20px; }
+
+@media (max-width: 980px) {
+  .depo { columns: 2; }
+}
+@media (max-width: 880px) {
+  .lista { grid-template-columns: 1fr; max-width: 520px; }
+}
+@media (max-width: 620px) {
+  .depo { columns: 1; }
+  .nota { padding: 22px 18px; text-align: center; }
+  .nota__txt { min-width: 0; }
+}

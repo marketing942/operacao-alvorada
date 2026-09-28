@@ -27,49 +27,38 @@
        dados na URL. */
     formId: "IPEyzyfmJhKQEYIXAlZH",
 
-    /* Envio para a planilha central DESLIGADO. Aquela planilha virou aba única
-       (CPPEM) e recebe só os projetos de captura; a Operação Alvorada é venda
-       direta e já tem planilha própria, alimentada pelo webhook do n8n logo
-       abaixo — nenhum lead se perde com isto desligado.
+    /* Planilha Always On (backend único de captura, Google Apps Script).
+       LIGADO desde que a página virou lista de espera: agora o lead é o
+       produto, e ele tem que cair onde a equipe trabalha os leads.
 
-       O loop de envio pula endpoint vazio (`if (!url) return;`), então basta
-       devolver a linha comentada para religar. */
-    // sheetEndpoint: "https://script.google.com/macros/s/AKfycbxdFplWVSfhTjvyIA7HIWb645xRjGNhBVhTdTf5UMjo0lSpW_A_jCuys0qB4uImKXPQ/exec?aba=OPERACAO",
-    sheetEndpoint: "",
+       O `?aba=OPERACAO` é o rótulo de origem desta landing no Apps Script
+       (ORIGENS.OPERACAO), e é ele que manda a linha para a aba `Venda_Direta`
+       — o mesmo destino que os leads desta página já tinham. Mudar de aba não
+       se faz aqui: é no ABA_POR_ORIGEM do google-apps-script.js, que depois
+       precisa ser republicado como nova versão da implantação.
+
+       O loop de envio pula endpoint vazio (`if (!url) return;`), então
+       esvaziar esta string desliga o envio sem quebrar nada. */
+    sheetEndpoint: "https://script.google.com/macros/s/AKfycbxdFplWVSfhTjvyIA7HIWb645xRjGNhBVhTdTf5UMjo0lSpW_A_jCuys0qB4uImKXPQ/exec?aba=OPERACAO",
     sheetTab: "OPERACAO",
 
-    /* Segundo destino: webhook do n8n que grava na planilha
-       "Operação Alvorada 11ª Edição — Leads"
-       (1q2XG4tjwSsZgtd2MUJiRcTG7Hg0ij2ZbEdpy3WsiEEo).
-
-       Não é a URL da planilha: não existe como gravar direto numa URL do Google
-       Sheets. Quem escreve é o fluxo n8n "Operação Alvorada — Leads para
-       Planilha", que recebe este POST e faz o append.
-
-       O corpo chega ao n8n como STRING, e não como objeto: o `no-cors` do
-       fetch só permite text/plain, então o webhook não faz o parse sozinho. As
-       expressões do fluxo já tratam os dois casos.
-
-       Vazio faz o envio extra ser pulado, sem quebrar nada. */
-    sheetEndpointExtra: "https://webhook.cppem.com.br/webhook/alvorada-lead",
+    /* Segundo destino DESLIGADO: o webhook do n8n grava na planilha
+       "Operação Alvorada 11ª Edição — Leads", que é a lista de COMPRADORES da
+       11ª edição. Misturar lista de espera com quem já comprou estragaria as
+       duas. Para religar, devolva a URL:
+       https://webhook.cppem.com.br/webhook/alvorada-lead */
+    sheetEndpointExtra: "",
 
     pagina: "Operação Alvorada",
 
-    /* Dois produtos, dois checkouts. Cada botão de ingresso carrega o seu em
-       data-checkout/data-produto (index.html) — estes aqui são só o destino de
-       segurança para um CTA que esqueça os atributos, para nunca sobrar um
-       botão que leve a lugar nenhum. */
-    produtoPadrao: "Transmissão Online — Operação Alvorada 11",
-    checkoutPadrao: "https://checkout.cppem.com.br/pay/operacao-alvorada-11-ingresso-online",
+    /* Não há mais produto nem checkout: esta página capta para a lista de
+       espera da próxima edição. O texto abaixo é o que vai para a coluna
+       "produto" da planilha, e é o que diferencia estes leads dos leads de
+       venda que esta mesma origem já gravou. */
+    produtoPadrao: "Lista de espera — próxima Operação Alvorada",
 
     redirectDelay: 1500,     // §7.6 — abaixo de ~1s começa a perder eventos
-    phoneMode: "celular_br", // §8.6 — "celular_br" | "celular_ou_fixo_br" | "internacional"
-
-    /* Prefixo do storage do exit popup. Precisa ser IGUAL ao CONFIG.prefix de
-       exit-popup-kit/exit-popup.js: são dois arquivos compartilhando uma
-       string, e é ela que faz o popup nunca mais aparecer para quem já foi
-       para o checkout. */
-    exitPopupPrefix: "alvorada"
+    phoneMode: "celular_br"  // §8.6 — "celular_br" | "celular_ou_fixo_br" | "internacional"
   };
 
   /* =========================================================
@@ -140,77 +129,12 @@
   window.addEventListener("scroll", onScroll, { passive: true });
   render();
 
-  /* ---------- contagem regressiva para a Operação ---------- */
-  /* A data-alvo mora no atributo data-target do #countdown (index.html) — é o
-     único lugar a mexer se o evento mudar de dia. */
-  var cdown = document.getElementById("countdown");
-
-  function pad(n) { return n < 10 ? "0" + n : String(n); }
-
-  if (cdown) {
-    var alvo = new Date(cdown.getAttribute("data-target")).getTime();
-    var cdD = document.getElementById("cdD");
-    var cdH = document.getElementById("cdH");
-    var cdM = document.getElementById("cdM");
-    var cdS = document.getElementById("cdS");
-    var navDays = document.getElementById("navDays");   // leitura curta na navbar
-    var urgDays = document.getElementById("urgDays");   // faixa de "última chance"
-
-    var tickCountdown = function () {
-      var falta = alvo - Date.now();
-
-      if (falta <= 0) {
-        cdown.classList.add("is-over");
-        cdD.textContent = cdH.textContent = cdM.textContent = cdS.textContent = "00";
-        if (navDays) navDays.textContent = "0";
-        clearInterval(cdTimer);
-        return;
-      }
-
-      var seg = Math.floor(falta / 1000);
-      var dias = Math.floor(seg / 86400);
-      cdD.textContent = pad(dias);
-      cdH.textContent = pad(Math.floor(seg / 3600) % 24);
-      cdM.textContent = pad(Math.floor(seg / 60) % 60);
-      cdS.textContent = pad(seg % 60);
-      if (navDays) navDays.textContent = String(dias);
-      if (urgDays) urgDays.textContent = String(dias);
-    };
-
-    var cdTimer = setInterval(tickCountdown, 1000);
-    tickCountdown();
-
-    /* ---------- barra da lotação presencial ---------- */
-    /* As 110 cadeiras da sede (padrão + VIP) estão vendidas: a barra fica
-       cheia e o texto comunica lotação, não escassez. Os dois checkouts
-       presenciais saíram do HTML — o que continua à venda é a transmissão.
-
-       Se numa próxima edição a barra precisar andar sozinha de novo, a
-       projeção por âncora de data está no histórico do git (commits do
-       3º lote). */
-    var CADEIRAS = 110;
-
-    var loteFill = document.getElementById("loteFill");
-    var loteBar  = document.getElementById("loteBar");
-    var loteLeft = document.getElementById("loteLeft");
-    var dockLeft = document.getElementById("dockLeft");
-
-    if (loteFill && loteLeft) {
-      loteLeft.textContent = CADEIRAS + "/" + CADEIRAS + " cadeiras ocupadas";
-      if (dockLeft) dockLeft.textContent = "presencial esgotado · assista ao vivo";
-      if (loteBar) loteBar.setAttribute("aria-valuenow", "100");
-
-      // pinta no próximo frame para a transição de largura acontecer
-      requestAnimationFrame(function () { loteFill.style.width = "100%"; });
-    }
-  }
-
   /* ---------- reveal on scroll (com escalonamento) ---------- */
   /* .ficha__item ficou de fora de propósito: a ficha mora na hero e já entra
      pela animação .anim d5 — dois fade-ins no mesmo bloco brigariam. */
   var targets = document.querySelectorAll(
-    ".section__head, .card, .final__inner, .cdown, .lote, " +
-    ".duo__col, .faq__item, .lineup__card, .medal, .galeria figure"
+    ".section__head, .card, .final__inner, .nota, .video__moldura, " +
+    ".lista, .faq__item, .depo__item, .galeria figure"
   );
   Array.prototype.forEach.call(targets, function (el) { el.classList.add("reveal"); });
 
@@ -253,55 +177,16 @@
     }
   }
 
-  /* ---------- modal ---------- */
-  var modal = document.getElementById("modal");
-  var modalProduto = document.getElementById("modalProduto");
-  var lastFocus = null;
-
-  /* Qual ingresso o visitante escolheu. Começa no padrão e é sobrescrito pelo
-     botão que abriu o modal — é isto que decide o destino do redirect e o que
-     vai para a coluna "produto" da planilha. */
-  var selecionado = {
-    produto: CONFIG.produtoPadrao,
-    checkout: CONFIG.checkoutPadrao
-  };
-
-  function openModal(e) {
-    var botao = e && e.currentTarget ? e.currentTarget : null;
-    var destino = botao ? botao.getAttribute("data-checkout") : null;
-
-    if (destino) {
-      selecionado = {
-        produto: botao.getAttribute("data-produto") || CONFIG.produtoPadrao,
-        checkout: destino
-      };
-    }
-    if (modalProduto) modalProduto.textContent = selecionado.produto;
-
-    lastFocus = document.activeElement;
-    modal.classList.add("is-open");
-    modal.setAttribute("aria-hidden", "false");
-    document.body.style.overflow = "hidden";
-    var first = document.getElementById("lead_name");
-    if (first) setTimeout(function () { first.focus(); }, 60);
+  /* ---------- vídeo institucional ----------
+     O aviso de "em produção" só existe enquanto o iframe estiver sem src. No
+     dia em que o embed for colado no index.html, o bloco vazio some sozinho —
+     ninguém precisa lembrar de apagar nada. */
+  var videoPlayer = document.querySelector(".video__player");
+  var videoVazio = document.querySelector(".video__vazio");
+  if (videoPlayer && videoVazio && videoPlayer.getAttribute("src")) {
+    videoPlayer.hidden = false;
+    videoVazio.hidden = true;
   }
-
-  function closeModal() {
-    modal.classList.remove("is-open");
-    modal.setAttribute("aria-hidden", "true");
-    document.body.style.overflow = "";
-    if (lastFocus) lastFocus.focus();
-  }
-
-  Array.prototype.forEach.call(document.querySelectorAll(".js-open"), function (btn) {
-    btn.addEventListener("click", openModal);
-  });
-  Array.prototype.forEach.call(modal.querySelectorAll("[data-close]"), function (el) {
-    el.addEventListener("click", closeModal);
-  });
-  document.addEventListener("keydown", function (e) {
-    if (e.key === "Escape" && modal.classList.contains("is-open")) closeModal();
-  });
 
   /* =========================================================
      Elementos do formulário (§6.0 — ids canônicos, não trocar)
@@ -434,7 +319,21 @@
     if (!submitBtn) return;
     submitBtn.disabled = state;
     if (spinner) spinner.hidden = !state;
-    if (btnLabel) btnLabel.textContent = state ? "REDIRECIONANDO..." : "IR PARA O CHECKOUT";
+    if (btnLabel) btnLabel.textContent = state ? "ENVIANDO..." : "QUERO SER AVISADO";
+  }
+
+  /* Estado de sucesso. Esta página não tem checkout: o fim do caminho é a
+     confirmação aqui mesmo. */
+  var listaOk = document.getElementById("listaOk");
+
+  function mostrarSucesso() {
+    if (form) form.hidden = true;
+    if (listaOk) {
+      listaOk.hidden = false;
+      listaOk.setAttribute("tabindex", "-1");
+      listaOk.focus();
+      listaOk.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
   }
 
   var enviado = false;   // guarda de idempotência (§9)
@@ -444,13 +343,6 @@
     enviado = true;
 
     loading(true);
-
-    /* Quem já foi para o checkout não pode receber, na volta, um popup
-       oferecendo grupo gratuito. O kit do exit popup lê exatamente esta
-       chave e se cala para sempre. */
-    try {
-      localStorage.setItem(CONFIG.exitPopupPrefix + "_lead_converted", "1");
-    } catch (e) {}
 
     /* As CHAVES são as colunas da planilha e continuam em português de
        propósito. Elas não têm relação com a nomenclatura da §6.0, que governa
@@ -465,7 +357,7 @@
     var payload = {
       aba: CONFIG.sheetTab,
       pagina: CONFIG.pagina,
-      produto: selecionado.produto,
+      produto: CONFIG.produtoPadrao,
       nome: nomeInput.value.trim(),
       email: emailInput.value.trim(),
       telefone: telefoneInput.value.trim(),
@@ -480,8 +372,8 @@
        landing do PMPE usa contra este mesmo endpoint. */
     var corpo = JSON.stringify(payload);
 
-    /* Fire-and-forget nos dois destinos: com no-cors não dá para ler a
-       resposta, então esperar não garante nada — só atrasaria o visitante. */
+    /* Fire-and-forget: com no-cors não dá para ler a resposta, então esperar
+       não garante nada — só atrasaria o visitante. */
     [CONFIG.sheetEndpoint, CONFIG.sheetEndpointExtra].forEach(function (url) {
       if (!url) return;
       fetch(url, {
@@ -490,18 +382,16 @@
         headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: corpo
       })["catch"](function (err) {
-        console.error("[Form] Falha ao salvar em " + url + " (segue o redirect):", err);
+        console.error("[Form] Falha ao salvar em " + url + " (segue o fluxo):", err);
       });
     });
 
-    /* §7.6 — piso de 1500ms antes de navegar, alinhado ao debounce da PixelX.
-       Navegar assim que o fetch no-cors resolve (~200ms) cancela a requisição
-       da conversão, que é assíncrona.
+    /* §7.6 — a mesma espera de sempre, agora antes de TROCAR A TELA em vez de
+       navegar: trocar o formulário pela confirmação na hora atropelaria a
+       requisição assíncrona da conversão, exatamente como o redirect atropelava.
        Também §7.6: NADA de form.reset() antes daqui — a PixelX lê os campos no
        blur e o reset a faria gravar valores vazios. */
-    setTimeout(function () {
-      window.location.href = selecionado.checkout;
-    }, CONFIG.redirectDelay);
+    setTimeout(mostrarSucesso, CONFIG.redirectDelay);
   }
 
   /* PRIMEIRA BARREIRA — clique do botão, em fase de captura (§7.8).

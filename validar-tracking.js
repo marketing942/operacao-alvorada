@@ -146,9 +146,17 @@ if (js) {
     "contar caracteres deixa passar número incompleto (+55 soma 2 dígitos)");
   add("JAVASCRIPT", "sem form.reset() antes do redirect", !jsCode.includes(".reset()"),
     "a PixelX lê os campos no blur; reset grava valores vazios");
-  add("JAVASCRIPT", "redirect com espera",
-    /setTimeout\([\s\S]{0,160}?location\.href/.test(jsCode),
-    "navegar na hora cancela a requisição assíncrona da conversão");
+  /* Páginas de captura pura (lista de espera) não navegam depois do envio:
+     trocam o formulário pela confirmação ali mesmo. A espera continua sendo
+     obrigatória — o que atropela a conversão é MUDAR A TELA cedo demais, seja
+     por redirect ou por troca de estado. Por isso o teste aceita as duas
+     formas, e só exige que exista uma espera entre o envio e o desfecho. */
+  const navega = /location\.href\s*=/.test(jsCode);
+  add("JAVASCRIPT", navega ? "redirect com espera" : "confirmação com espera (sem redirect)",
+    navega
+      ? /setTimeout\([\s\S]{0,160}?location\.href/.test(jsCode)
+      : /setTimeout\([\s\S]{0,160}?CONFIG\.redirectDelay/.test(jsCode),
+    "mudar de tela na hora cancela a requisição assíncrona da conversão");
   add("JAVASCRIPT", "barreira de submit em fase de captura",
     /document\.addEventListener\(\s*\n?\s*['"]submit['"]/.test(jsCode), "");
   /* Exige o PADRÃO da barreira (valida + preventDefault), não um listener de
