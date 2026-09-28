@@ -1602,9 +1602,10 @@ strong, b { font-weight: 700; color: var(--text); }
 }
 
 /* =========================================================
-   VÍDEO INSTITUCIONAL
-   A moldura reserva 16:9 desde o primeiro pixel: quando o embed for colado
-   no index.html, a página não pula.
+   VÍDEO INSTITUCIONAL — seção fora do ar enquanto o vídeo não existe
+   O CSS fica de pé de propósito: quando o vídeo ficar pronto, basta devolver
+   a seção do histórico do git ao index.html. A moldura reserva 16:9 desde o
+   primeiro pixel, então ligar o vídeo não faz a página pular.
    ========================================================= */
 .video { max-width: 940px; margin-inline: auto; }
 .video__moldura {

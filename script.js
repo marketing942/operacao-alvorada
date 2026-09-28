@@ -133,7 +133,7 @@
   /* .ficha__item ficou de fora de propósito: a ficha mora na hero e já entra
      pela animação .anim d5 — dois fade-ins no mesmo bloco brigariam. */
   var targets = document.querySelectorAll(
-    ".section__head, .card, .final__inner, .nota, .video__moldura, " +
+    ".section__head, .card, .final__inner, .nota, " +
     ".lista, .faq__item, .depo__item, .galeria figure"
   );
   Array.prototype.forEach.call(targets, function (el) { el.classList.add("reveal"); });
@@ -175,17 +175,6 @@
       p.style.transform = "scale(" + (0.5 + Math.random()).toFixed(2) + ")";
       sparks.appendChild(p);
     }
-  }
-
-  /* ---------- vídeo institucional ----------
-     O aviso de "em produção" só existe enquanto o iframe estiver sem src. No
-     dia em que o embed for colado no index.html, o bloco vazio some sozinho —
-     ninguém precisa lembrar de apagar nada. */
-  var videoPlayer = document.querySelector(".video__player");
-  var videoVazio = document.querySelector(".video__vazio");
-  if (videoPlayer && videoVazio && videoPlayer.getAttribute("src")) {
-    videoPlayer.hidden = false;
-    videoVazio.hidden = true;
   }
 
   /* =========================================================
